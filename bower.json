@@ -1,0 +1,31 @@
+{
+  "name": "report-hub",
+  "description": "Application that allows fraternities and sororoties to manage their meeting minutes. Users can upload reports, search by various criteria, and export them to various formats.",
+  "main": "index.html",
+  "authors": [
+    "Jack Moore",
+    "Julia Calandro",
+    "Levi Lamming"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "report-hub",
+    "fraternity",
+    "sorority",
+    "greek",
+    "life",
+    "chapter",
+    "reports",
+    "meetings"
+  ],
+  "homepage": "https://github.com/jtmthf/Report-Hub",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
