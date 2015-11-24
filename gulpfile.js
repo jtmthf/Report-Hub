@@ -10,9 +10,8 @@ var rename = require('gulp-rename');
 
 // Lint Task
 gulp.task('lint', function() {
-	return gulp.src(['app/*.js',
-			 'web/*.js'],
-			{base: 'src/'})
+	return gulp.src(['app/**/*.js',
+			'public/**/*.js'])
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
@@ -23,24 +22,30 @@ gulp.task('mocha', function() {
 		.pipe(mocha());
 });
 
-// Concatenate & Minify App JS
-gulp.task('scripts', function() {
-	return gulp.src('src/app/*.js')
-		.pipe(concat('all.js'))
-		.pipe(gulp.dest('dist/app'))
-		.pipe(rename('all.min.js'))
-		.pipe(uglify())
+// Relocate App JS
+gulp.task('app-scripts', function() {
+	return gulp.src(['app/**/*.js',
+			'server.js'])
 		.pipe(gulp.dest('dist/app'))
 });
 
+// Concatenate & Minify Public JS
+gulp.task('public-scripts', function() {
+	return gulp.src('public/js/*.js')
+		.pipe(concat('all.js'))
+		.pipe(gulp.dest('dist/public'))
+		.pipe(rename('all.min.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest('dist/public'))
+});
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-	gulp.watch(['src/app/*.js', 'src/web/*.js'], ['lint']);
-	gulp.watch('src/app/*.js', ['scripts', 'mocha']);
+	gulp.watch(['app/**/*.js', 'public/js/*.js'], ['lint', 'mocha', 'app-scripts', 'public-scripts']);
 });
 
 // Deafult Task
-gulp.task('default', ['lint', 'mocha', 'scripts', 'watch']);
+gulp.task('default', ['lint', 'mocha', 'app-scripts', 'public-scripts']);
 
-
+// Watch Task
+gulp.task('watch', ['lint', 'mocha', 'app-scripts', 'public-scripts', 'watch']);

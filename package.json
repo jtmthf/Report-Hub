@@ -2,7 +2,7 @@
   "name": "report-hub",
   "version": "0.0.1",
   "description": "Application that allows fraternities and sororoties to manage their meeting minutes. Users can upload reports, search by various criteria, and export them to various formats.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "mocha"
   },
