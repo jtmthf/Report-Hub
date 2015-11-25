@@ -1,23 +1,20 @@
-// app/routes.js
+// app/api/routes.js
 
-module.exports = function(app, pool) {
+module.exports = function(app, api, pool) {
+
+    var auth0        = require('./authenticate.js')(app);
+    var auth1        = require('./authorize.js');
+    var middleware   = require('./middleware.js');
 
 	// server routes ===========================================================
     // handle things like api calls
     // authentication routes
 
-    // sample api route
-    app.get('/api/user', function(req, res) {
-    	// Query to get all users in the database
-    	pool.query('SELECT Email, Avatar, First, Last FROM User', function(err, rows, fields) {
+    api.post('/register', function(req, res) {
+        middleware.register(req, res, pool);
+    });
 
-    		// if there is an error retrieving, send the error.
-
-    		if (err) {
-    			res.send(err);
-    		}
-
-    		res.json(rows);
-    	})
-    })
+    api.post('/login', function(req, res) {
+        middleware.login(req, res, pool);
+    });
 }
