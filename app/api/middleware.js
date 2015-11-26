@@ -3,9 +3,7 @@
 module.exports = function(app, pool) {
 
 	var query = require('query')(pool);
-
 	var bcrypt = require('bcrypt');
-
 	var moment = require('moment');
 	moment().format();
 
@@ -132,45 +130,69 @@ module.exports = function(app, pool) {
 
 		}
 	}
-}
 
-function new_meeting(db, title, mtg_date, repeat, until)
-{
+	newMeeting: function(req, res) {
 
-	var ending_date = moment(until);
-	var meeting = {mtg_title: title, meeting_date: moment(mtg_date)};
-	var meetings = [];
+		req.checkBody('meetingDate', 'Date is invalid').isDate();
+		req.checkBody('meetingTitle', 'Need a meeting title').notEmpty();
+		req.checkBody('repeat', 'Option is invalid').optional().matches(/^(none|daily|weekly|monthly)$/);
+		req.checkBody('until', 'Date is invalid').optional.isDate();
 
-	while(meeting.meeting_date.isBefore(ending_date) || ending_date.isSame(meeting.meeting_date))
-	{
-		switch(repeat)
-		{
-			case "none":
-				meetings.push(meeting);
-				break;
-			case "daily":
-				meetings.push(meeting);
-				meeting.add(1, 'd');
-				break;
-			case "weekly":
-				meetings.push(meeting);
-				meeting.add(1, 'w');				
-				break;
-			case: "monthly":
-				meetings.push(meeting);
-				meeting.add(1, 'M');				
-				break;
-			default: 
-				return false;
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		} else {
+
+			var endingDate = moment(req.body.until);
+			var meeting = {meetingTitle: req.body.meetingTitle, meetingDate: moment(req.body.meetingDate)};
+			var meetings = [];
+
+			while(meeting.meetingDate.isBefore(endingDate) || endingDate.isSame(meeting.meetingDate))
+			{
+				switch(req.bodyrepeat)
+				{
+					case 'none':
+						meetings.push(meeting);
+						break;
+					case 'daily':
+						meetings.push(meeting);
+						meeting.add(1, 'd');
+						break;
+					case 'weekly':
+						meetings.push(meeting);
+						meeting.add(1, 'w');				
+						break;
+					case: 'monthly':
+						meetings.push(meeting);
+						meeting.add(1, 'M');				
+						break;
+				}
+			}
+
+
+			meetings = meetings.map(function(obj) {
+				return [req.body.chapter, obj.meetingTitle, obj.meetingDate.toDate()];
+			});
+
+			query.newMeeting(meetings, function(err, result) {
+				if (err) {
+					return res.json({
+						success: false,
+						message: 'Could not find user',
+						errors: err
+					});
+				} else {
+					return res.json({
+						success: true,
+						meetings: meetings
+					});
+				}
+			});
 		}
 	}
-
-	for(i = 0; i < meetings.length; i++)
-	{
-		meetings[i].meeting_date = meetings[i].meeting_date.toDate();
-	}
-
-	//db.query('INSERT INTO MEETING VALUES(?, ?, ?, ?)', []
-
-	return true;
 }

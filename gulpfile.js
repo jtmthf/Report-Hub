@@ -10,8 +10,7 @@ var rename = require('gulp-rename');
 
 // Lint Task
 gulp.task('lint', function() {
-	return gulp.src(['app/**/*.js',
-			'public/**/*.js'])
+	return gulp.src('app/**/*.js')
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
