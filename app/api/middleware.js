@@ -2,12 +2,13 @@
 
 module.exports = function(app, pool) {
 
-	var query = require('query')(pool);
+	var query = require('./query')(pool);
 	var bcrypt = require('bcrypt');
 	var moment = require('moment');
+	var jwt = require('jsonwebtoken');
 	moment().format();
 
-	register: function(req, res) {
+	function register(req, res) {
 
 		req.checkBody({
 			'name.first' : {
@@ -45,7 +46,7 @@ module.exports = function(app, pool) {
 				errorMessage : 'Invalid password'
 			},
 			'confirmation' : {
-				equals: req.body.password
+				equals: req.body.password,
 				errorMessage : 'Confirmation must match password'
 			}
 		});
@@ -75,13 +76,20 @@ module.exports = function(app, pool) {
 					req.body.email,
 					hash, function(err, result) {		
 						if (err) {
-							return res.json({
+							return res.status(200).json({
 								success: false,
 								message: 'Could not create user in database',
 								errors: err
 							});
 						} else {
-							return login(req, res, pool);
+							var token = jwt.sign(req.body.email, app.get('jwtSecret'), {
+								expiresInMinutes: 10080 // expires in 7 days
+							});
+
+							return res.status(200).json({
+								success: true,
+								token: token
+							});
 						}
 					});
 				}
@@ -89,14 +97,14 @@ module.exports = function(app, pool) {
 		}
 	}
 
-	login: function(req, res) {
+	function login(req, res) {
 		var email = req.body.email;
 		var password = req.body.password;
 
 		if (email && password) {
 			query.getHash(email, function(err, result) {
 				if (err) {
-					return res.json({
+					return res.status(403).json({
 						success: false,
 						message: 'Could not find user',
 						errors: err
@@ -119,7 +127,7 @@ module.exports = function(app, pool) {
 								expiresInMinutes: 10080 // expires in 7 days
 							});
 
-							return res.json({
+							return res.status(200).json({
 								success: true,
 								token: token
 							});
@@ -131,7 +139,7 @@ module.exports = function(app, pool) {
 		}
 	}
 
-	newMeeting: function(req, res) {
+	function newMeeting(req, res) {
 
 		req.checkBody('meetingDate', 'Date is invalid').isDate();
 		req.checkBody('meetingTitle', 'Need a meeting title').notEmpty();
@@ -167,7 +175,7 @@ module.exports = function(app, pool) {
 						meetings.push(meeting);
 						meeting.add(1, 'w');				
 						break;
-					case: 'monthly':
+					case 'monthly':
 						meetings.push(meeting);
 						meeting.add(1, 'M');				
 						break;
@@ -181,13 +189,13 @@ module.exports = function(app, pool) {
 
 			query.newMeeting(meetings, function(err, result) {
 				if (err) {
-					return res.json({
+					return res.status(500).json({
 						success: false,
-						message: 'Could not find user',
+						message: 'Could not create meeting',
 						errors: err
 					});
 				} else {
-					return res.json({
+					return res.status(200).json({
 						success: true,
 						meetings: meetings
 					});
@@ -195,4 +203,11 @@ module.exports = function(app, pool) {
 			});
 		}
 	}
-}
+
+	return {
+		register: register,
+		login: login,
+		newMeeting: newMeeting
+	};
+};
+

@@ -12,9 +12,9 @@ var config         = require('./config');
 
 // configuration ===========================================
 var port = process.env.PORT || config.port;
-var pool = mysql.create({
+var pool = mysql.createPool({
 	connectionLimit : config.connectionLimit,
-	host			: config.host,
+	database		: config.database,
 	user 			: config.user,
 	password 		: config.password
 });
@@ -25,7 +25,7 @@ var api = express.Router();
 // parse application/json 
 app.use(bodyParser.json());
 app.use(expressValidator({
-	customSanitizers: {
+	customValidators: {
 		containsLower: function(value) {
 			return /[a-z]/.test(value);
 		},
@@ -48,7 +48,7 @@ app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public')); 
 
 // routes ==================================================
-require('./app/routes')(app, api, pool); // configure our routes
+require('./routes')(app, api, pool); // configure our routes
 app.use('/api', api)
 
 // start app ===============================================
@@ -56,7 +56,7 @@ app.use('/api', api)
 app.listen(port);               
 
 // shoutout to the user                     
-console.log('Magic happens on port ' + config);
+console.log('Magic happens on port ' + port);
 
 // expose app           
 exports = module.exports = app;  

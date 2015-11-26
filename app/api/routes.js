@@ -17,4 +17,4 @@ module.exports = function(app, api, pool) {
     api.post('/login', function(req, res) {
         return middleware.login(req, res);
     });
-}
+};

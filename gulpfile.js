@@ -23,9 +23,10 @@ gulp.task('mocha', function() {
 
 // Relocate App JS
 gulp.task('app-scripts', function() {
-	return gulp.src(['app/**/*.js',
-			'server.js'])
-		.pipe(gulp.dest('dist/app'))
+	return gulp.src(['app/api/*.js',
+					 'server.js',
+					 'config/config.js'])
+		.pipe(gulp.dest('dist/debug'))
 });
 
 // Concatenate & Minify Public JS
