@@ -14,7 +14,7 @@ CREATE TABLE Chapter(
 ) ENGINE=InnoDB;
 
 CREATE TABLE User(
-	Password	VARCHAR(60)						NOT NULL,
+	Password	CHAR(60)						NOT NULL,
 	Email		VARCHAR(100) 					NOT NULL,
 	Avatar		VARCHAR(255) 					DEFAULT 'assets/img/default.jpg',
 	First		VARCHAR(32),
