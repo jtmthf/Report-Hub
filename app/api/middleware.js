@@ -6,6 +6,9 @@ module.exports = function(app, pool) {
 
 	var bcrypt = require('bcrypt');
 
+	var moment = require('moment');
+	moment().format();
+
 	register: function(req, res) {
 
 		req.checkBody({
@@ -129,4 +132,45 @@ module.exports = function(app, pool) {
 
 		}
 	}
+}
+
+function new_meeting(db, title, mtg_date, repeat, until)
+{
+
+	var ending_date = moment(until);
+	var meeting = {mtg_title: title, meeting_date: moment(mtg_date)};
+	var meetings = [];
+
+	while(meeting.meeting_date.isBefore(ending_date) || ending_date.isSame(meeting.meeting_date))
+	{
+		switch(repeat)
+		{
+			case "none":
+				meetings.push(meeting);
+				break;
+			case "daily":
+				meetings.push(meeting);
+				meeting.add(1, 'd');
+				break;
+			case "weekly":
+				meetings.push(meeting);
+				meeting.add(1, 'w');				
+				break;
+			case: "monthly":
+				meetings.push(meeting);
+				meeting.add(1, 'M');				
+				break;
+			default: 
+				return false;
+		}
+	}
+
+	for(i = 0; i < meetings.length; i++)
+	{
+		meetings[i].meeting_date = meetings[i].meeting_date.toDate();
+	}
+
+	//db.query('INSERT INTO MEETING VALUES(?, ?, ?, ?)', []
+
+	return true;
 }
