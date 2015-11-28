@@ -28,4 +28,6 @@ node_modules
 .DS_Store
 
 # config.js file - passeords and keys
-config/config.js
+
+
+config
