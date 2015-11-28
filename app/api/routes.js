@@ -3,7 +3,7 @@
 module.exports = function(app, api, pool) {
 
     var auth0        = require('./authenticate.js')(app);
-    var auth1        = require('./authorize.js');
+    var auth1        = require('./authorize.js')(pool);
     var middleware   = require('./middleware.js')(app, pool);
 
 	// server routes ===========================================================
@@ -16,5 +16,9 @@ module.exports = function(app, api, pool) {
 
     api.post('/login', function(req, res) {
         return middleware.login(req, res);
+    });
+
+    api.post('/newMeeting', auth0.authenticate, auth1.newMeeting, function(req, res) {
+        return middleware.newMeeting(req, res);
     });
 };

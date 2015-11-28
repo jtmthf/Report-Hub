@@ -25,7 +25,7 @@ gulp.task('mocha', function() {
 gulp.task('app-scripts', function() {
 	return gulp.src(['app/api/*.js',
 					 'server.js',
-					 'config/config.js'])
+					 'config/*'])
 		.pipe(gulp.dest('dist/debug'))
 });
 

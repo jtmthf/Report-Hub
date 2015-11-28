@@ -1,14 +1,16 @@
 // server.js
 
 // modules =================================================
-var express        = require('express');
-expressValidator   = require('express-validator')
-var app            = express();
-var bodyParser     = require('body-parser');
-var morgan		   = require('morgan');
-var mysql		   = require('mysql');
+var fs             		= require('fs');
+var https 		   		= require('https');
+var express 			= require('express');
+var expressValidator   	= require('express-validator')
+var bodyParser     		= require('body-parser');
+var morgan		   		= require('morgan');
+var mysql		   		= require('mysql');
+var app           	 	= express();
 
-var config         = require('./config');
+var config         		= require('./config');
 
 // configuration ===========================================
 var port = process.env.PORT || config.port;
@@ -23,6 +25,7 @@ var api = express.Router();
 
 // get all data/stuff of the body (POST) parameters
 // parse application/json 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(expressValidator({
 	customValidators: {
@@ -53,7 +56,10 @@ app.use('/api', api)
 
 // start app ===============================================
 // startup our app at http://localhost:8080
-app.listen(port);               
+https.createServer({
+    key: fs.readFileSync('dist/debug/key.pem'),
+    cert: fs.readFileSync('dist/debug/cert.pem')
+}, app).listen(port);
 
 // shoutout to the user                     
 console.log('Magic happens on port ' + port);

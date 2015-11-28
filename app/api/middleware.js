@@ -143,8 +143,8 @@ module.exports = function(app, pool) {
 
 		req.checkBody('meetingDate', 'Date is invalid').isDate();
 		req.checkBody('meetingTitle', 'Need a meeting title').notEmpty();
-		req.checkBody('repeat', 'Option is invalid').optional().matches(/^(none|daily|weekly|monthly)$/);
-		req.checkBody('until', 'Date is invalid').optional.isDate();
+		req.checkBody('repeat', 'Option is invalid').matches(/^(none|daily|weekly|monthly)$/);
+		req.checkBody('until', 'Date is invalid').isDate();
 
 		var errors = req.validationErrors();
 
