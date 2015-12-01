@@ -56,7 +56,7 @@ module.exports = function(app, pool) {
 		var errors = req.validationErrors();
 
 		if (errors) {
-			return res.status(406).json({
+			return res.status(400).json({
 				success: false,
 				message: 'Could not validate input fields',
 				errors: errors
@@ -104,19 +104,22 @@ module.exports = function(app, pool) {
 		if (email && password) {
 			query.getHash(email, function(err, result) {
 				if (err) {
-					return res.status(403).json({
+					throw err;
+				}
+				if (!result[0]) {
+					return res.status(400).json({
 						success: false,
-						message: 'Could not find user',
-						errors: err
+						message: 'Username or password was incorrect',
 					});
 				} else {
 					bcrypt.compare(password, result[0].Password, function(err, bres) {
 						if (err) {
 							throw err;
-						} else if (!bres) {
-							res.status(403).json({
+						}
+						if (!bres) {
+							res.status(400).json({
 								success: false,
-								message: 'Password was incorrect'
+								message: 'Username or password was incorrect'
 							});
 						} else {
 							genToken(email, function(scope, token) {
@@ -422,6 +425,7 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
+		}
 	}
 
 	function getPositions(req, res) {
@@ -450,7 +454,5 @@ module.exports = function(app, pool) {
 		newMeeting: newMeeting,
 		genToken: genToken
 	};
-
-}
 };
 

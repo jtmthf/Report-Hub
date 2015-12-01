@@ -10,15 +10,9 @@ module.exports = function(app, api, pool) {
     // handle things like api calls
     // authentication routes
 
-    api.post('/register', function(req, res) {
-        return middleware.register(req, res);
-    });
+    api.post('/register', middleware.register);
 
-    api.post('/login', function(req, res) {
-        return middleware.login(req, res);
-    });
+    api.post('/login', middleware.login);
 
-    api.post('/newMeeting', auth0.authenticate, auth1.newMeeting, function(req, res) {
-        return middleware.newMeeting(req, res);
-    });
+    api.post('/newMeeting', auth0.authenticate, auth1.newMeeting, middleware.newMeeting);
 };
