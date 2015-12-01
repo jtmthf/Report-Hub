@@ -215,18 +215,45 @@ module.exports = function(app, pool) {
 		req.checkQuery('searchString', 'Not a string.').optional().isAlphanumeric();
 		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
 		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
 	};
 
 	function getNationals(req, res) {
 		req.checkQuery('searchString', 'Not a string.').optional().isAlphanumeric();
 		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
 		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
 	};
 
 	function editAccount(req, res) {
 		req.checkBody('fname', 'Not a string.').isAlpha();
 		req.checkBody('lname', 'Not a string.').isAlpha();
 		req.checkBody('email', 'Not an email.').isEmail();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
 	};
 
 	function uploadImage(req, res) {
@@ -296,10 +323,28 @@ module.exports = function(app, pool) {
 				errorMessage : 'Invalid password'
 			}
 		});
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
 	};
 
 	function inviteMember(req, res) {
 		req.checkBody('email', 'Not an email.').isEmail();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
 	};
 
 	function getInvitedMembers(req, res) {
@@ -312,6 +357,15 @@ module.exports = function(app, pool) {
 
 	function addPosition(req, res) {
 		req.checkBody('admin', 'Not a boolean value.').isBoolean();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
 	};
 
 	function getPositions(req, res) {
