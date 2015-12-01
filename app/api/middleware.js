@@ -209,5 +209,126 @@ module.exports = function(app, pool) {
 		login: login,
 		newMeeting: newMeeting
 	};
+
+
+	function getChapters(req, res) {
+		req.checkQuery('searchString', 'Not a string.').optional().isAlphanumeric();
+		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
+		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
+	};
+
+	function getNationals(req, res) {
+		req.checkQuery('searchString', 'Not a string.').optional().isAlphanumeric();
+		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
+		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
+	};
+
+	function editAccount(req, res) {
+		req.checkBody('fname', 'Not a string.').isAlpha();
+		req.checkBody('lname', 'Not a string.').isAlpha();
+		req.checkBody('email', 'Not an email.').isEmail();
+	};
+
+	function uploadImage(req, res) {
+		//need to validate that the image is buffer data
+	};
+
+	function changePassword(req, res) {
+		req.checkBody({
+			'oldPassword' : {
+				notEmpty: true,
+				isLength: {
+					options: [8],
+					errorMessage: 'Mmust be at least 8 characters'
+				},
+				containsUpper: {
+					errorMessage: 'Must contain at least one upper-case character'
+				},
+				containsLower: {
+					errorMessage: 'Must contain at least one lower-case character'
+				},
+				containsSpecial: {
+					errorMessage: 'Must contain at least one special character'
+				},
+				containsDigit: {
+					errorMessage: 'Must contain at least one digit'
+				},
+				errorMessage : 'Invalid password'
+			},
+			'newPassword' : {
+				notEmpty: true,
+				isLength: {
+					options: [8],
+					errorMessage: 'Mmust be at least 8 characters'
+				},
+				containsUpper: {
+					errorMessage: 'Must contain at least one upper-case character'
+				},
+				containsLower: {
+					errorMessage: 'Must contain at least one lower-case character'
+				},
+				containsSpecial: {
+					errorMessage: 'Must contain at least one special character'
+				},
+				containsDigit: {
+					errorMessage: 'Must contain at least one digit'
+				},
+				errorMessage : 'Invalid password'
+			},
+			'confirmationPassword' : {
+				notEmpty: true,
+				isLength: {
+					options: [8],
+					errorMessage: 'Mmust be at least 8 characters'
+				},
+				containsUpper: {
+					errorMessage: 'Must contain at least one upper-case character'
+				},
+				containsLower: {
+					errorMessage: 'Must contain at least one lower-case character'
+				},
+				containsSpecial: {
+					errorMessage: 'Must contain at least one special character'
+				},
+				containsDigit: {
+					errorMessage: 'Must contain at least one digit'
+				},
+				errorMessage : 'Invalid password'
+			}
+		});
+	};
+
+	function inviteMember(req, res) {
+		req.checkBody('email', 'Not an email.').isEmail();
+	};
+
+	function getInvitedMembers(req, res) {
+
+	};
+
+	function getMembers(req, res) {
+
+	};
+
+	function addPosition(req, res) {
+		req.checkBody('admin', 'Not a boolean value.').isBoolean();
+	};
+
+	function getPositions(req, res) {
+
+	};
+
+	function removeFromChapter(req, res) {
+
+	};
+
+	function removePosition(req, res) {
+
+	};
+
+	function editChapter(req, res) {
+
+	};
+
 };
 
