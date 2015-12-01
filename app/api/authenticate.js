@@ -1,21 +1,48 @@
 // app/api/authenticate.js
 
-var jwt = require('jsonwebtoken');
+module.exports = function(app, pool) {
 
-module.exports = function(app) {
+	var jwt = require('jsonwebtoken');
+	var redis = require('redis');
+	var md5 = require('md5');
+	var middleware   = require('./middleware.js')(app, pool);
+
+	var client = redis.createClient(); //creates a new client
+
 	function authenticate(req, res, next) {
 		var token = req.body.token;
 		if (token) {
 			jwt.verify(token, app.get('jwtSecret'), function(err, decoded) {
 				if (err) {
-					return res.status(403).json({ success: false, message: 'Failed to authenticate token.'});
+					return res.status(403).json({ 
+						success: false, 
+						message: 'Failed to authenticate token.'
+					});
 				} else {
-					req.permissions = decoded;
-					next();
+					client.get(md5(token), function(err, reply) {
+						if (err) {
+							throw err;
+						}
+						if (reply === 'logout') {
+							return res.status(403).json({ 
+								success: false, 
+								message: 'Failed to authenticate token.'
+							});
+						} else if (reply === 'rescope') {
+							middleware.genToken(decoded.user, function(scope, token) {
+								req.permissions = scope;
+								req.token = token;
+								next();
+							});	
+						} else {
+							req.permissions = decoded;
+							next();
+						}
+					});
 				}
 			});
 		} else {
-			return res.status(403).send({
+			return res.status(403).json({
 				success: false,
 				message: 'No token provided.'
 			});

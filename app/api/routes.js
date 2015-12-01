@@ -2,7 +2,7 @@
 
 module.exports = function(app, api, pool) {
 
-    var auth0        = require('./authenticate.js')(app);
+    var auth0        = require('./authenticate.js')(app, pool);
     var auth1        = require('./authorize.js')(pool);
     var middleware   = require('./middleware.js')(app, pool);
 
