@@ -1,0 +1,1 @@
+ALTER TABLE Student MODIFY COLUMN Chapter Int;

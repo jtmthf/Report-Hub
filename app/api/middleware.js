@@ -6,6 +6,8 @@ module.exports = function(app, pool) {
 	var bcrypt = require('bcrypt');
 	var moment = require('moment');
 	var jwt = require('jsonwebtoken');
+	var md5 = require('md5');
+
 	moment().format();
 
 	function register(req, res) {
@@ -82,13 +84,11 @@ module.exports = function(app, pool) {
 								errors: err
 							});
 						} else {
-							var token = jwt.sign(req.body.email, app.get('jwtSecret'), {
-								expiresInMinutes: 10080 // expires in 7 days
-							});
-
-							return res.status(200).json({
-								success: true,
-								token: token
+							genToken(req.body.email, function(scope, token) {
+								return res.status(200).json({
+									success: true,
+									token: token
+								});
 							});
 						}
 					});
@@ -110,26 +110,20 @@ module.exports = function(app, pool) {
 						errors: err
 					});
 				} else {
-					bcrypt.compare(password, result[0].Password, function(err, res) {
+					bcrypt.compare(password, result[0].Password, function(err, bres) {
 						if (err) {
-							return res.status(500).json({
-								success: false,
-								message: 'Could not hash password',
-								errors: err
-							});
-						} else if (!res) {
-							return res.status(403).json({
+							throw err;
+						} else if (!bres) {
+							res.status(403).json({
 								success: false,
 								message: 'Password was incorrect'
 							});
 						} else {
-							var token = jwt.sign(email, app.get('jwtSecret'), {
-								expiresInMinutes: 10080 // expires in 7 days
-							});
-
-							return res.status(200).json({
-								success: true,
-								token: token
+							genToken(email, function(scope, token) {
+								res.status(200).json({
+									success: true,
+									token: token
+								});
 							});
 						}
 					});
@@ -204,10 +198,73 @@ module.exports = function(app, pool) {
 		}
 	}
 
+	function genToken(user, callback) {
+		query.getScope(user, function(err, result) {
+			if (err) {
+				throw err;
+			} else {
+				var scope = {};
+				if (result[0]) {
+					scope = {
+						user: user,
+						role: result[0].Role,
+						chapter: result[0].Chapter,
+						national: result[0].National,
+						position: {
+							title: result[0].Title,
+							admin: result[0].Admin
+						}
+					};
+					if (scope.position.title) {
+						var subs = [];
+						getSubPositions(result[0].Chapter, result[0].Title, subs, function() {
+							scope.position.subs = subs;
+							createAddToken(scope, user, callback);
+						});						
+					} else {
+						createAddToken(scope, user, callback);
+					}
+				} else {
+					scope = {
+						user: user
+					};
+					createAddToken(scope, user, callback);
+				}
+			}
+		});
+	}
+
+	function getSubPositions(chapter, title, subs, callback) {
+		query.getSubPositions(chapter, title, function(err, result) {
+			if (err) {
+				throw err;
+			}
+			result.forEach(function(sub) {
+				subs.push(sub);
+				getSubPositions(chapter, sub.Title, subs, function() {
+				});
+			});
+			callback();
+		});
+	}
+
+	function createAddToken(scope, user, callback) {
+		var token = jwt.sign(scope, app.get('jwtSecret'), {
+			expiresIn: 604800 // expires in 7 days
+		});
+		query.addToken(md5(token), user, moment().add(604800, 's').toDate(), function(err, result) {
+			if (err && err.code !== "ER_DUP_ENTRY") {
+				throw err; 
+			}
+		});
+		callback(scope, token);
+	}
+
 	return {
 		register: register,
 		login: login,
-		newMeeting: newMeeting
+		newMeeting: newMeeting,
+		genToken: genToken
 	};
 
 
