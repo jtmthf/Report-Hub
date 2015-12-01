@@ -260,12 +260,6 @@ module.exports = function(app, pool) {
 		callback(scope, token);
 	}
 
-	return {
-		register: register,
-		login: login,
-		newMeeting: newMeeting,
-		genToken: genToken
-	};
 
 
 	function getChapters(req, res) {
@@ -281,7 +275,8 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
-	};
+		}
+	}
 
 	function getNationals(req, res) {
 		req.checkQuery('searchString', 'Not a string.').optional().isAlphanumeric();
@@ -296,7 +291,8 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
-	};
+		}
+	}
 
 	function editAccount(req, res) {
 		req.checkBody('fname', 'Not a string.').isAlpha();
@@ -311,11 +307,12 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
-	};
+		}
+	}
 
 	function uploadImage(req, res) {
 		//need to validate that the image is buffer data
-	};
+	}
 
 	function changePassword(req, res) {
 		req.checkBody({
@@ -389,7 +386,8 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
-	};
+		}
+	}
 
 	function inviteMember(req, res) {
 		req.checkBody('email', 'Not an email.').isEmail();
@@ -402,15 +400,16 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
-	};
+		}
+	}
 
 	function getInvitedMembers(req, res) {
 
-	};
+	}
 
 	function getMembers(req, res) {
 
-	};
+	}
 
 	function addPosition(req, res) {
 		req.checkBody('admin', 'Not a boolean value.').isBoolean();
@@ -423,23 +422,35 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
-	};
+	}
 
 	function getPositions(req, res) {
 
-	};
+	}
 
 	function removeFromChapter(req, res) {
 
-	};
+	}
 
 	function removePosition(req, res) {
 
-	};
+	}
 
 	function editChapter(req, res) {
 
+	}
+
+	function createNationalOrg(req, res) {
+
+	}
+
+	return {
+		register: register,
+		login: login,
+		newMeeting: newMeeting,
+		genToken: genToken
 	};
 
+}
 };
 
