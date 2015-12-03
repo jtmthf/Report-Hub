@@ -84,6 +84,10 @@ module.exports = function(db) {
 
 		getUserByEmployeeRoleNational: function(pageNum, pageSize, searchString, natName, callback) {
 			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Employee E, National N WHERE U.Email = E.Email AND N.Name = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [natName, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		removeAccount: function(email, callback) {
+			db.query('DELETE FROM User U WHERE U.Email = ?', [email], callback);
 		}			
 
 	};

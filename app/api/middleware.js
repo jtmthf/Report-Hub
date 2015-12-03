@@ -479,6 +479,34 @@ module.exports = function(app, pool) {
 		}
 	}
 
+	function removeAccount(req, res) {
+		req.checkQuery('email', 'Not an email.').isEmail();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}
+		else {
+
+			var email = req.body.email;
+
+			query.removeAccount(email, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					users: result
+				});
+			});
+		}
+	}
+
 	function uploadImage(req, res) {
 		//need to validate that the image is buffer data
 	}
