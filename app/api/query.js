@@ -32,6 +32,59 @@ module.exports = function(db) {
 
 		addToken: function(token, user, expiration, callback) {
 			db.query('INSERT INTO Token VALUES(?, ?, ?)' , [token, user, expiration], callback);
-		}
+		},
+
+		getChapter: function(chapID, callback) {
+			db.query('SELECT * FROM Chapter C WHERE C.ID = ?', [chapID], callback);
+		},
+
+		getAllUsers: function(pageNum, pageSize, searchString, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U WHERE U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?% LIMIT ?, ?', [searchString, searchString, searchString, pageNum, pageSize], callback);
+		},
+
+		getUserByChapter: function(pageNum, pageSize, searchString, chapID, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Chapter C WHERE C.ID = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [chapID, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getUserByNational: function(pageNum, pageSize, searchString, natName, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, National N WHERE N.Name = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [natName, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getUserByStudentRole: function(pageNum, pageSize, searchString, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Student S WHERE U.Email = S.Email AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getUserByAdminRole: function(pageNum, pageSize, searchString, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Admin A WHERE U.Email = A.Email AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getUserByEmployeeRole: function(pageNum, pageSize, searchString, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Employee E WHERE U.Email = E.Email AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getUserByAdvisorRole: function(pageNum, pageSize, searchString, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Advisor A WHERE U.Email = A.Email AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},	
+
+		getUserByStudentRoleChapter: function(pageNum, pageSize, searchString, chapID, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Student S, Chapter C WHERE U.Email = S.Email AND C.ID = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [chapID, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getUserByAdvisorRoleChapter: function(pageNum, pageSize, searchString, chapID, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Advisor A, Chapter C WHERE U.Email = A.Email AND C.ID = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [chapID, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getUserByStudentRoleNational: function(pageNum, pageSize, searchString, natName, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Student S, National N WHERE U.Email = S.Email AND N.Name = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [natName, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getUserByAdvisorRoleNational: function(pageNum, pageSize, searchString, natName, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Advisor A, National N WHERE U.Email = A.Email AND N.Name = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [natName, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getUserByEmployeeRoleNational: function(pageNum, pageSize, searchString, natName, callback) {
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Employee E, National N WHERE U.Email = E.Email AND N.Name = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [natName, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		}			
+
 	};
 };

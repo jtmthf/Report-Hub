@@ -263,10 +263,176 @@ module.exports = function(app, pool) {
 		callback(scope, token);
 	}
 
+	function getUsers(req, res) {
+		req.checkQuery('email', 'Not a valid email.').optional().isEmail();
+		req.checkQuery('role', 'Not a valid string.').optional().isAlpha();
+		req.checkQuery('chapID', 'Not an integer.').optional().isInt();
+		req.checkQuery('searchString', 'Not a valid string.').optional().isAlphanumeric();
+		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
+		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();		
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		} else {
+
+			var email = req.body.email;
+			var role = req.body.role;
+			var chapID = req.body.chapID;
+			var natName = req.body.natName;
+			var searchString = req.body.searchString;
+			var pageNumber = req.body.pageNumber;
+			var pageSize = req.body.pageSize;
+
+			if (role == 'student') {
+				if(chapID) {
+					query.getUserByStudentRoleChapter(pageNumber, pageSize, searchString, chapID, function(err, result) {
+						if (err) {
+							throw err;
+						}
+						return res.status(200).json({
+							success: true,
+							users: result
+						});
+					});
+				}
+				else if (natName) {
+					query.getUserByStudentRoleNational(pageNumber, pageSize, searchString, natName, function(err, result) {
+						if (err) {
+							throw err;
+						}
+						return res.status(200).json({
+							success: true,
+							users: result
+						});
+					});					
+				}
+				else {
+					query.getUserByStudentRole(pageNumber, pageSize, searchString, function(err, result) {
+						if (err) {
+							throw err;
+						}
+						return res.status(200).json({
+							success: true,
+							users: result
+						});
+					});					
+				}
+			}
+			else if (role == 'advisor') {
+				if(chapID) {
+					query.getUserByAdvisorRoleChapter(pageNumber, pageSize, searchString, chapID, function(err, result) {
+						if (err) {
+							throw err;
+						}
+						return res.status(200).json({
+							success: true,
+							users: result
+						});
+					});
+				}
+				else if (natName) {
+					query.getUserByAdvisorRoleNational(pageNumber, pageSize, searchString, natName, function(err, result) {
+						if (err) {
+							throw err;
+						}
+						return res.status(200).json({
+							success: true,
+							users: result
+						});
+					});					
+				}
+				else {
+					query.getUserByAdvisorRole(pageNumber, pageSize, searchString, function(err, result) {
+						if (err) {
+							throw err;
+						}
+						return res.status(200).json({
+							success: true,
+							users: result
+						});
+					});					
+				}
+			}
+			else if (role == 'admin') {
+				query.getUserByAdvisorRole(pageNumber, pageSize, searchString, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						users: result
+					});
+				});					
+			}
+			else if (role == 'employee') {
+				if (natName) {
+					query.getUserByEmployeeRoleNational(pageNumber, pageSize, searchString, natName, function(err, result) {
+						if (err) {
+							throw err;
+						}
+						return res.status(200).json({
+							success: true,
+							users: result
+						});
+					});					
+				}
+				else {
+					query.getUserByEmployeeRole(pageNumber, pageSize, searchString, function(err, result) {
+						if (err) {
+							throw err;
+						}
+						return res.status(200).json({
+							success: true,
+							users: result
+						});
+					});					
+				}
+			}
+			else if (chapID) {
+				query.getUserByChapter(pageNumber, pageSize, searchString, chapID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						users: result
+					});
+				});					
+			}	
+			else if (natName) {
+				query.getUserByNational(pageNumber, pageSize, searchString, natName, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						users: result
+					});
+				});					
+			}
+			else {
+				query.getAllUsers(pageNumber, pageSize, searchString, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						users: result
+					});
+				});
+			}									
+		}		
+	}
 
 
 	function getChapters(req, res) {
-		req.checkQuery('searchString', 'Not a string.').optional().isAlphanumeric();
+		req.checkQuery('searchString', 'Not a valid string.').optional().isAlphanumeric();
 		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
 		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
 
@@ -452,7 +618,24 @@ module.exports = function(app, pool) {
 		register: register,
 		login: login,
 		newMeeting: newMeeting,
-		genToken: genToken
+		genToken: genToken,
+		getSubPositions: getSubPositions,
+		createAddToken: createAddToken,
+		getUsers: getUsers,
+		getChapters: getChapters,
+		getNationals: getNationals,
+		editAccount: editAccount,
+		uploadImage: uploadImage,
+		changePassword: changePassword,
+		inviteMember: inviteMember,
+		getInvitedMembers: getInvitedMembers,
+		getMembers: getMembers,
+		addPosition: addPosition,
+		getPositions: getPositions,
+		removeFromChapter: removeFromChapter,
+		removePosition: removePosition,
+		editChapter: editChapter,
+		createNationalOrg: createNationalOrg
 	};
 };
 

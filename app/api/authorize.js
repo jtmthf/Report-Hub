@@ -36,7 +36,7 @@ module.exports = function(pool) {
 
 		if (permissions.role === 'admin') {
 			next();
-		} else if (permissions.role === 'employee' && (req.body.role === 'employee' || req.body.role === 'advisor' || req.body.role === 'student' || !req.body.role) {
+		} else if (permissions.role === 'employee' && (req.body.role === 'employee' || req.body.role === 'advisor' || req.body.role === 'student' || !req.body.role)) {
 			if (req.body.national) {
 				if (req.body.national === permissions.national) {
 					next();
@@ -65,7 +65,7 @@ module.exports = function(pool) {
 			} else {
 				next();
 			}
-		} else if (permissions.role === 'student' && permissions.role === 'advisor' (req.body.role === 'advisor' || req.body.role === 'student' || !req.body.role)) {
+		} else if (permissions.role === 'student' && permissions.role === 'advisor' && (req.body.role === 'advisor' || req.body.role === 'student' || !req.body.role)) {
 			if (req.body.chapter) {
 				if (req.body.chapter === permissions.chapter) {
 					next();
