@@ -10,11 +10,11 @@ module.exports = function(app, pool) {
 	var client = redis.createClient(); //creates a new client
 
 	function authenticate(req, res, next) {
-		var token = req.body.token;
+		var token = req.headers.Authorization.replace('Bearer ', '');
 		if (token) {
 			jwt.verify(token, app.get('jwtSecret'), function(err, decoded) {
 				if (err) {
-					return res.status(403).json({ 
+					return res.status(400).json({ 
 						success: false, 
 						message: 'Failed to authenticate token.'
 					});
@@ -24,14 +24,14 @@ module.exports = function(app, pool) {
 							throw err;
 						}
 						if (reply === 'logout') {
-							return res.status(403).json({ 
+							return res.status(400).json({ 
 								success: false, 
 								message: 'Failed to authenticate token.'
 							});
 						} else if (reply === 'rescope') {
 							middleware.genToken(decoded.user, function(scope, token) {
 								req.permissions = scope;
-								req.token = token;
+								res.token = token;
 								next();
 							});	
 						} else {
@@ -42,7 +42,7 @@ module.exports = function(app, pool) {
 				}
 			});
 		} else {
-			return res.status(403).json({
+			return res.status(400).json({
 				success: false,
 				message: 'No token provided.'
 			});

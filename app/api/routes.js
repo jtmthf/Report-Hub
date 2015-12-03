@@ -15,4 +15,6 @@ module.exports = function(app, api, pool) {
     api.post('/login', middleware.login);
 
     api.post('/newMeeting', auth0.authenticate, auth1.newMeeting, middleware.newMeeting);
+
+    api.get('/user', auth0.authenticate, auth1.getUsers, middleware.getUsers);
 };

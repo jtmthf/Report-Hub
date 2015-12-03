@@ -7,6 +7,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 describe('API', function() {
 
 	describe('User', function() {
+		var registered = false;
 		var token = null;
 
 		describe('Register', function() {
@@ -132,7 +133,7 @@ describe('API', function() {
 						res.status.should.be.equal(200);
 						res.body.should.have.property('success', true);
 						res.body.should.have.property('token');
-						token = res.body.token;
+						registered = true;
 						done();
 				});
 			});
@@ -141,7 +142,7 @@ describe('API', function() {
 		describe('Login', function() {
 
 			var check = function(done) {
-				if (token) done();
+				if (registered) done();
 				else setTimeout(function() {check(done)}, 100);
 			}
 
@@ -206,10 +207,37 @@ describe('API', function() {
 						res.status.should.be.equal(200);
 						res.body.should.have.property('success', true);
 						res.body.should.have.property('token');
+						token = res.body.token;
 						done();
 				});
 			});
 
 		});
+
+		describe('Get', function() {
+
+			var check = function(done) {
+				if (token) done();
+				else setTimeout(function() {check(done)}, 100);
+			}
+
+			before(function(done) {
+				check(done);
+			});
+
+			it('should return forbidden accessing all users while not an admin', function(done) {
+				request('https://localhost:8443/api/user')
+					.get('')
+					.end(function(err, res) {
+						if (err) {
+							throw err;
+						}
+
+						res.status.should.be.equal(403);
+						
+				});
+			});			
+		});
+
 	});	
 });

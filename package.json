@@ -40,6 +40,7 @@
   "dependencies": {
     "bcrypt": "node_modules/bcrypt",
     "body-parser": "node_modules/body-parser",
+    "cookie-parser": "^1.4.0",
     "express": "node_modules/express",
     "express-validator": "node_modules/express-validator",
     "jsonwebtoken": "^5.4.1",
