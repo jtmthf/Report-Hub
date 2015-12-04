@@ -39,7 +39,7 @@ module.exports = function(db) {
 		},
 
 		getAllUsers: function(pageNum, pageSize, searchString, callback) {
-			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U WHERE U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?% LIMIT ?, ?', [searchString, searchString, searchString, pageNum, pageSize], callback);
+			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U WHERE U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?% LIMIT ?, ?', [searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
 		},
 
 		getUserByChapter: function(pageNum, pageSize, searchString, chapID, callback) {
@@ -88,7 +88,75 @@ module.exports = function(db) {
 
 		removeAccount: function(email, callback) {
 			db.query('DELETE FROM User U WHERE U.Email = ?', [email], callback);
-		}			
+		},	
+
+		removeChapter: function(chapID, callback) {
+			db.query('DELETE FROM Chapter C WHERE C.ID = ?', [chapID], callback);
+		},
+
+		removeNational: function(natName, callback) {
+			db.query('DELETE FROM National N WHERE N.Name = ?', [natName], callback);
+		},				
+
+		removeMeeting: function(mtgID, callback) {
+			db.query('DELETE FROM Meeting M WHERE M.ID = ?', [mtgID], callback);
+		},
+
+		removeReport: function(reportID, callback) {
+			db.query('DELETE FROM Report R WHERE R.ID = ?', [reportID], callback);
+		},		
+
+		removePosition: function(posTitle, chapID, callback) {
+			db.query('DELETE FROM Office O WHERE O.Title = ? AND O.Chapter = ?', [posTitle, chapID], callback);
+		},
+
+		getAllChapters: function(pageNum, pageSize, searchString, callback) {
+			db.query('SELECT C.Name FROM Chapter C WHERE C.Name LIKE ?% OR C.SchoolName LIKE ?% OR C.Nationals LIKE ?% LIMIT ?, ?', [searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		}, 
+
+		getChapterByID: function(chapID, callback) {
+			db.query('SELECT C.Name FROM Chapter C WHERE C.ID = ?', [chapID], callback);
+		},	
+
+		getChapterByNational: function(pageNum, pageSize, natName, callback) {
+			db.query('SELECT C.Name FROM Chapter C WHERE C.Nationals = ? LIMIT ?, ?', [natName, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getChapterByUser: function(pageNum, pageSize, email, callback) {
+			db.query("(SELECT C.Name FROM Chapter C, Advisor A WHERE C.ID = A.Chapter AND A.Email = ?) LIMIT ?, ?" +
+					 "UNION" +
+					 "(SELECT C.Name FROM Chapter C, Student S WHERE C.ID = S.Chapter AND S.Email = ?) LIMIT ?, ?",
+					 [email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getAllNationals: function(pageNum, pageSize, searchString, callback) {
+			db.query('SELECT N.Name FROM National N WHERE N.Name LIKE ?% LIMIT ?, ?', [searchString, (pageNum-1)*pageSize, pageSize], callback);
+		}, 
+
+		getNationalByChapID: function(chapID, callback) {
+			db.query('SELECT C.Nationals FROM Chapter C WHERE C.ID = ?', [chapID], callback);
+		},
+
+		getNationalByUser: function(pageNum, pageSize, email, callback) {
+			db.query("(SELECT C.Nationals FROM Chapter C, Advisor A,  WHERE C.ID = A.Chapter AND A.Email = ?) LIMIT ?, ?" +
+					 "UNION" +
+					 "(SELECT C.Nationals FROM Chapter C, Student S WHERE C.ID = S.Chapter AND S.Email = ?) LIMIT ?, ?" +
+					 "UNION" +
+					 "(SELECT E.Nationals FROM Employee E WHERE E.Email = ?) LIMIT ?, ?",
+					 [email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getPositionsByChapter: function(pageNum, pageSize, chapID, callback) {
+			db.query('SELECT O.Title FROM Office O WHERE O.Chapter = ? LIMIT ?, ?', [chapID, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getPositionByUser: function(email, callback) {
+			db.query('SELECT O.Title FROM Office O WHERE O.Email LIKE ?%', [email], callback);
+		},	
+
+		getPositionByTitle: function(chapID, posTitle, callback) {
+			db.query('SELECT O.Title FROM Office O WHERE O.Title LIKE ?% AND O.Chapter = ?', [posTitle, chapID], callback);
+		}					
 
 	};
 };

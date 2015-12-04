@@ -13,6 +13,7 @@ CREATE TABLE Chapter(
 	Name		VARCHAR(100)					NOT NULL,
 	Xhtml		VARCHAR(255)					DEFAULT 'assets/xhmtl/default.xhmtl',
 	Nationals	VARCHAR(64)						NOT NULL,
+	SchoolName  VARCHAR(100),
 	FOREIGN KEY(Nationals)						REFERENCES National(Name) ON DELETE CASCADE,
 	PRIMARY KEY(ID)
 ) ENGINE=InnoDB;
