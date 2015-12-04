@@ -499,6 +499,7 @@ module.exports = function(app, pool) {
 	function getNationals(req, res) {
 		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
 		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
+		req.checkQuery('email', 'Not an email.').optional().isEmail();		
 
 		var errors = req.validationErrors();
 
@@ -818,10 +819,6 @@ module.exports = function(app, pool) {
 
 	}
 
-	function getMembers(req, res) {
-
-	}
-
 	function addPosition(req, res) {
 		req.checkBody('admin', 'Not a boolean value.').isBoolean();
 
@@ -837,7 +834,57 @@ module.exports = function(app, pool) {
 	}
 
 	function getPositions(req, res) {
+		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
+		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
+		req.checkQuery('email', 'Not an email.').optional().isEmail();		
 
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		} else {
+			var pageNumber = req.body.pageNumber;
+			var pageSize = req.body.pageSize;
+			var email = req.body.email;
+			var chapID = req.body.chapID;
+			var posTitle = req.body.posTitle;
+
+			if(chapID) {
+				query.getPositionsByChapter(pageNumber, pageSize, chapID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						positions: result
+					});
+				});			
+			} else if(email) {
+				query.getPositionByUser(email, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						positions: result
+					});
+				});				
+			} else if(chapID && posTitle){
+				query.getPositionByTitle(chapID, posTitle, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						positions: result
+					});
+				});	
+			}						
+		}
 	}
 
 	function removeFromChapter(req, res) {

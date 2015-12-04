@@ -144,7 +144,19 @@ module.exports = function(db) {
 					 "UNION" +
 					 "(SELECT E.Nationals FROM Employee E WHERE E.Email = ?) LIMIT ?, ?",
 					 [email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize], callback);
-		}			
+		},
+
+		getPositionsByChapter: function(pageNum, pageSize, chapID, callback) {
+			db.query('SELECT O.Title FROM Office O WHERE O.Chapter = ? LIMIT ?, ?', [chapID, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getPositionByUser: function(email, callback) {
+			db.query('SELECT O.Title FROM Office O WHERE O.Email LIKE ?%', [email], callback);
+		},	
+
+		getPositionByTitle: function(chapID, posTitle, callback) {
+			db.query('SELECT O.Title FROM Office O WHERE O.Title LIKE ?% AND O.Chapter = ?', [posTitle, chapID], callback);
+		}					
 
 	};
 };
