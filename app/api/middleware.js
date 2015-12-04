@@ -267,7 +267,6 @@ module.exports = function(app, pool) {
 		req.checkQuery('email', 'Not a valid email.').optional().isEmail();
 		req.checkQuery('role', 'Not a valid string.').optional().isAlpha();
 		req.checkQuery('chapID', 'Not an integer.').optional().isInt();
-		req.checkQuery('searchString', 'Not a valid string.').optional().isAlphanumeric();
 		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
 		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();		
 
@@ -416,7 +415,7 @@ module.exports = function(app, pool) {
 					});
 				});					
 			}
-			else {
+			else if (searchString) {
 				query.getAllUsers(pageNumber, pageSize, searchString, function(err, result) {
 					if (err) {
 						throw err;
@@ -432,9 +431,9 @@ module.exports = function(app, pool) {
 
 
 	function getChapters(req, res) {
-		req.checkQuery('searchString', 'Not a valid string.').optional().isAlphanumeric();
 		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
 		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
+		req.checkQuery('email', 'Not an email.').optional().isEmail();
 
 		var errors = req.validationErrors();
 
@@ -444,11 +443,60 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
+		} else {
+
+			var pageNumber = req.body.pageNumber;
+			var pageSize = req.body.pageSize;
+			var email = req.body.email;
+			var searchString = req.body.searchString;
+			var natName = req.body.natName;
+			var chapID = req.body.chapID;
+
+			if(chapID) {
+				query.getChapterByID(chapID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapters: result
+					});
+				});
+			} else if(natName) {
+				query.getChapterByNational(pageNumber, pageSize, natName, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapters: result
+					});
+				});				
+			} else if(email) {
+				query.getChapterByUser(pageNumber, pageSize, email, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapters: result
+					});
+				});				
+			} else if(searchString){
+				query.getAllChapters(pageNumber, pageSize, searchString, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapters: result
+					});
+				});	
+			}			
 		}
 	}
 
 	function getNationals(req, res) {
-		req.checkQuery('searchString', 'Not a string.').optional().isAlphanumeric();
 		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
 		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
 
@@ -460,9 +508,48 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
+		} else {
+			var pageNumber = req.body.pageNumber;
+			var pageSize = req.body.pageSize;
+			var email = req.body.email;
+			var searchString = req.body.searchString;
+			var chapID = req.body.chapID;
+
+			if(chapID) {
+				query.getNationalByChapID(chapID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						nationals: result
+					});
+				});			
+			} else if(email) {
+				query.getNationalByUser(pageNumber, pageSize, email, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						nationals: result
+					});
+				});				
+			} else if(searchString){
+				query.getAllNationals(pageNumber, pageSize, searchString, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						nationals: result
+					});
+				});	
+			}						
 		}
 	}
 
+	//change first name, last name, email
 	function editAccount(req, res) {
 		req.checkBody('fname', 'Not a string.').isAlpha();
 		req.checkBody('lname', 'Not a string.').isAlpha();
@@ -506,6 +593,133 @@ module.exports = function(app, pool) {
 			});
 		}
 	}
+
+	function removeChapter(req, res) {
+		req.checkQuery('chapID', 'Not an integer.').isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}
+		else {
+
+			var chapID = req.body.chapID;
+
+			query.removeChapter(chapID, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					users: result
+				});
+			});
+		}
+	}
+
+	function removeNational(req, res) {
+		var natName = req.body.natName;
+
+		query.removeNational(natName, function(err, result) {
+			if (err) {
+				throw err;
+			}
+			return res.status(200).json({
+				success: true,
+				users: result
+			});
+		});
+	}	
+
+	function removeMeeting(req, res) {
+		req.checkQuery('mtgID', 'Not an integer.').isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}
+		else {
+
+			var mtgID = req.body.mtgID;
+
+			query.removeMeeting(mtgID, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					users: result
+				});
+			});
+		}
+	}
+
+	function removeReport(req, res) {
+		req.checkQuery('reportID', 'Not an integer.').isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}
+		else {
+
+			var reportID = req.body.reportID;
+
+			query.removeReport(reportID, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					users: result
+				});
+			});
+		}
+	}
+
+	function removePosition(req, res) {
+		req.checkQuery('chapID', 'Not an integer.').isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}
+		else {
+
+			var posTitle = req.body.posTitle;
+			var chapID = req.body.chapID;
+
+			query.removeReport(posTitle, chapID, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					users: result
+				});
+			});
+		}
+	}				
 
 	function uploadImage(req, res) {
 		//need to validate that the image is buffer data
@@ -627,10 +841,6 @@ module.exports = function(app, pool) {
 	}
 
 	function removeFromChapter(req, res) {
-
-	}
-
-	function removePosition(req, res) {
 
 	}
 
