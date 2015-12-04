@@ -67,7 +67,7 @@ CREATE TABLE Office(
 	Chapter 	INT 							NOT NULL,
 	Email		VARCHAR(100),
 	FOREIGN KEY(Chapter)						REFERENCES Chapter(ID) ON DELETE CASCADE,
-	FOREIGN KEY(Email)							REFERENCES User(Email),
+	FOREIGN KEY(Email)							REFERENCES User(Email) ON DELETE SET NULL,
 	PRIMARY KEY(Title, Chapter)
 ) ENGINE=InnoDB;
 

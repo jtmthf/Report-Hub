@@ -44,7 +44,7 @@ module.exports = function(pool) {
 					res.status(403).json({
 						success: false,
 						token: req.token,
-						message: 'Not authorized to create meeting'
+						message: 'Not authorized to get users with current parameters'
 					});
 				}
 			} else if (req.body.chapter) {
@@ -58,7 +58,7 @@ module.exports = function(pool) {
 						res.status(403).json({
 							success: false,
 							token: req.token,
-							message: 'Not authorized to create meeting'
+							message: 'Not authorized to get users with current parameters'
 						});
 					}
 				});
@@ -77,13 +77,113 @@ module.exports = function(pool) {
 			res.status(403).json({
 				success: false,
 				token: req.token,
-				message: 'Not authorized to create meeting'
+				message: 'Not authorized to get users with current parameters'
 			});
 		}
 	}
 
+	function removeUser(req, res, next) {
+		var permissions = req.permissions;
+
+		if (permissions.role === 'admin') {
+			next();
+		} else if (req.body.email === permissions.user) {
+			next();
+		} else {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to delete user'
+			});
+		}
+	}
+
+	function removeChapter(req, res, next) {
+		if (req.permissions.role === 'admin') {
+			next();
+		} else {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to delete chapter'
+			});
+		}
+	}
+
+	function removeNational(req, res, next) {
+		if (req.permissions.role === 'admin') {
+			next();
+		} else {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to delete national'
+			});
+		}
+	}
+
+	function removeMeeting(req, res, next) {
+		var permissions = req.permissions;
+
+		if (permissions.role === 'admin') {
+			next();
+		} else if (permissions.role === 'advisor') {
+			query.isAdvisorOfMeeting(permissions.user, req.body.meeting, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				if (result[0]) {
+					next();
+				} else {
+					res.status(403).json({
+						success: false,
+						token: req.token,
+						message: 'Not authorized to remove meeting'
+					});					
+				}
+			});
+		} else {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to remove meeting'
+			});
+		}
+	}
+
+	function removeReport(req, res, next) {
+		if (req.body.permissions === 'admin') {
+			next();
+		} else {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to delete chapter'
+			});
+		}
+	}
+
+	function removePosition(req, res, next) {
+		if (req.body.permissions === 'admin') {
+			next();
+		} else {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to delete chapter'
+			});
+		}
+	}
+
+
 	return {
 		newMeeting: newMeeting,
-		getUsers: getUsers
+		getUsers: getUsers,
+		removeUser: removeUser,
+		removeChapter: removeChapter,
+		removeNational: removeNational,
+		removeMeeting: removeMeeting,
+		removeReport: removeReport,
+		removePosition: removePosition
 	};
 };

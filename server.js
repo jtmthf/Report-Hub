@@ -2,6 +2,7 @@
 
 // modules =================================================
 var fs             		= require('fs');
+var path                = require('path')
 var https 		   		= require('https');
 var express 			= require('express');
 var expressValidator   	= require('express-validator')
@@ -49,6 +50,10 @@ app.use(morgan('dev'));
 
 // set the static files location eg. /public/img will be /img for users
 app.use(express.static(__dirname + '/public')); 
+
+app.get('*', function (req, res){
+ 	res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+});
 
 // routes ==================================================
 require('./routes')(app, api, pool); // configure our routes
