@@ -68,7 +68,4 @@ gulp.task('watch', function() {
 });
 
 // Deafult Task
-gulp.task('default', ['lint', 'app-scripts', 'public', 'webpack']);
-
-// Watch Task
-gulp.task('watch', ['lint', 'app-scripts', 'public', 'webpack', 'watch']);
+gulp.task('default', ['lint', 'app-scripts', 'public', 'webpack', 'watch']);
