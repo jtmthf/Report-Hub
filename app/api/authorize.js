@@ -4,31 +4,14 @@ module.exports = function(pool) {
 
 	var query = require('./query')(pool);
 
-	function newMeeting(req, res, next) {
-		var permissions = req.permissions;
-
-		if (permissions.role === 'admin') {
-			next();
-		} else if (permissions.role === 'student' && permissions.chapter == req.body.chapter && permissions.position.admin) {
-			next();
-		} else if (permissions.role === 'advisor' && permissions.chapter == req.body.chapter) {
-			next();
-		} else if (permissions.role === 'employee') {
-			query.getChapter(req.body.chapter, function(err, result) {
-				if (err) {
-					throw err;
-				}
-				if (result[0].Nationals === permissions.national) {
-					next();
-				} 
-			});
-		} else {
+	function createMeeting(req, res, next) {
+		controlsChapter(req, res, next, function() {
 			res.status(403).json({
 				success: false,
 				token: req.token,
 				message: 'Not authorized to create meeting'
 			});
-		}
+		});
 	}
 
 	function getUsers(req, res, next) {
@@ -52,7 +35,7 @@ module.exports = function(pool) {
 					if (err) {
 						throw err;
 					}
-					if (result[0].Nationals === permissions.national) {
+					if (result[0] && result[0].Nationals === permissions.national) {
 						next();
 					} else {
 						res.status(403).json({
@@ -60,6 +43,21 @@ module.exports = function(pool) {
 							token: req.token,
 							message: 'Not authorized to get users with current parameters'
 						});
+					}
+				});
+			} else if (req.body.email) {
+				query.isUserInNational(req.body.email, permissions.national, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					if (result[0]) {
+						next();
+					} else {
+						res.status(403).json({
+							success: false,
+							token: req.token,
+							message: 'Not authorized to get users with current parameters'
+						});						
 					}
 				});
 			} else {
@@ -70,8 +68,29 @@ module.exports = function(pool) {
 				if (req.body.chapter === permissions.chapter) {
 					next();
 				}
+			} else if (req.body.email) {
+				query.isUserInChapter(req.body.email, permissions.chapter, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					if (result[0]) {
+						next();
+					} else {
+						res.status(403).json({
+							success: false,
+							token: req.token,
+							message: 'Not authorized to get users with current parameters'
+						});						
+					}
+				});
 			} else if (!req.body.national) {
 				next();
+			} else {
+				res.status(403).json({
+					success: false,
+					token: req.token,
+					message: 'Not authorized to get users with current parameters'
+				});				
 			}
 		} else {
 			res.status(403).json({
@@ -82,20 +101,56 @@ module.exports = function(pool) {
 		}
 	}
 
-	function removeUser(req, res, next) {
-		var permissions = req.permissions;
+	function editUser(req, res, next) {
+		isSelfOrAdmin(req, res, next, function() {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to edit user'
+			});			
+		});
+	}
 
-		if (permissions.role === 'admin') {
-			next();
-		} else if (req.body.email === permissions.user) {
+	function removeUser(req, res, next) {
+		isSelfOrAdmin(req, res, next, function() {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to delete user'
+			});			
+		});	
+	}
+
+	function getChapters(req, res, next) {
+		isOfChapter(req, res, next, function() {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to delete user'
+			});						
+		});
+	}
+
+	function createChapter(req, res, next) {
+		if (req.permissions.role === 'admin') {
 			next();
 		} else {
 			res.status(403).json({
 				success: false,
 				token: req.token,
-				message: 'Not authorized to delete user'
+				message: 'Not authorized to create chapter'
 			});
 		}
+	}
+
+	function editChapter(req, res, next) {
+		controlsChapter(req, res, next, function() {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to delete chapter'
+			});
+		});	
 	}
 
 	function removeChapter(req, res, next) {
@@ -110,6 +165,18 @@ module.exports = function(pool) {
 		}
 	}
 
+	function getNationals(req, res, next) {
+		next();
+	}
+
+	function createNational(req, res, next) {
+		next();
+	}
+
+	function editNational(req, res, next) {
+		next();
+	}
+
 	function removeNational(req, res, next) {
 		if (req.permissions.role === 'admin') {
 			next();
@@ -120,6 +187,18 @@ module.exports = function(pool) {
 				message: 'Not authorized to delete national'
 			});
 		}
+	}
+
+	function getMeetings(req, res, next) {
+		next();
+	}
+
+	function createMeeting(req, res, next) {
+		next();
+	}
+
+	function editMeeting(req, res, next) {
+		next();
 	}
 
 	function removeMeeting(req, res, next) {
@@ -151,6 +230,18 @@ module.exports = function(pool) {
 		}
 	}
 
+	function getReports(req, res, next) {
+		next();
+	}
+
+	function createReport(req, res, next) {
+		next();
+	}
+
+	function editReport(req, res, next) {
+		next();
+	}
+
 	function removeReport(req, res, next) {
 		if (req.body.permissions === 'admin') {
 			next();
@@ -161,6 +252,18 @@ module.exports = function(pool) {
 				message: 'Not authorized to delete chapter'
 			});
 		}
+	}
+
+	function getPositions(req, res, next) {
+		next();
+	}
+
+	function createPosition(req, res, next) {
+		next();
+	}
+
+	function editPosition(req, res, next) {
+		next();
 	}
 
 	function removePosition(req, res, next) {
@@ -175,15 +278,85 @@ module.exports = function(pool) {
 		}
 	}
 
+	function isSelfOrAdmin(req, res, next, callback) {
+		var permissions = req.permissions;
+		if (permissions.role === 'admin') {
+			next();
+		} else if (req.body.email === permissions.user) {
+			next();
+		} else {
+			callback();
+		}
+	}
+
+	function controlsChapter(req, res, next, callback) {
+		var permissions = req.permissions;
+		if (permissions.role === 'admin') {
+			next();
+		} else if (permissions.role === 'student' && permissions.chapter == req.body.chapter && permissions.position.admin) {
+			next();
+		} else if (permissions.role === 'advisor' && permissions.chapter == req.body.chapter) {
+			next();
+		} else if (permissions.role === 'employee') {
+			query.getChapter(req.body.chapter, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				if (result[0] && result[0].Nationals === permissions.national) {
+					next();
+				} 
+			});
+		} else {
+			callback();
+		}
+	}
+
+	function isOfChapter(req, res, next, callback) {
+		var permissions = req.permissions;
+		if (permissions.role === 'admin') {
+			next();
+		} else if (permissions.role === 'student' && permissions.chapter == req.body.chapter) {
+			next();
+		} else if (permissions.role === 'advisor' && permissions.chapter == req.body.chapter) {
+			next();
+		} else if (permissions.role === 'employee') {
+			query.getChapter(req.body.chapter, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				if (result[0] && result[0].Nationals === permissions.national) {
+					next();
+				} 
+			});
+		} else {
+			callback();
+		}
+	}
 
 	return {
-		newMeeting: newMeeting,
-		getUsers: getUsers,
-		removeUser: removeUser,
-		removeChapter: removeChapter,
-		removeNational: removeNational,
+		getUsers: getUsers,					//done
+		editUser: editUser,					//done
+		removeUser: removeUser,				//done
+		getChapters: getChapters,			//done
+		createChapter: createChapter,		//done
+		editChapter: editChapter,			//done
+		removeChapter: removeChapter,		//done
+		getNationals: getNationals,
+		createNational: createNational,
+		editNational: editNational,
+		createMeeting: createMeeting,		//done
+		removeNational: removeNational,		//done
+		getMeetings: getMeetings,
+		createMeeting: createMeeting,
+		editMeeting: editMeeting,
 		removeMeeting: removeMeeting,
+		getReports: getReports,
+		createReport: createReport,
+		editReport: editReport,
 		removeReport: removeReport,
+		getPositions: getPositions,
+		createPosition: createPosition,
+		editPosition: editPosition,
 		removePosition: removePosition
 	};
 };

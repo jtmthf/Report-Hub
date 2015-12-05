@@ -914,7 +914,6 @@ module.exports = function(app, pool) {
 		changePassword: changePassword,
 		inviteMember: inviteMember,
 		getInvitedMembers: getInvitedMembers,
-		getMembers: getMembers,
 		addPosition: addPosition,
 		getPositions: getPositions,
 		removeFromChapter: removeFromChapter,
