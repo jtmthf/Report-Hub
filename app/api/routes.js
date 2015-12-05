@@ -14,7 +14,57 @@ module.exports = function(app, api, pool) {
 
     api.post('/login', middleware.login);
 
-    api.post('/newMeeting', auth0.authenticate, auth1.newMeeting, middleware.newMeeting);
+    api.post('/meeting', auth0.authenticate, auth1.newMeeting, middleware.newMeeting);
+
+    api.get('/meeting', auth0.authenticate, auth1.getMeetings, middleware.getMeetings);
+
+    api.put('/meeting', auth0.authenticate, auth1.editMeeting, middleware.editMeeting);
+
+    api.delete('/meeting', auth0.authenticate, auth1.removeMeeting, middleware.removeMeeting);
+
+    api.get('/national', auth0.authenticate, auth1.getNationals, middleware.getNationals);
+
+    api.post('/national', auth0.authenticate, auth1.createNational, middleware.createNational);
+
+    api.put('/national', auth0.authenticate, auth1.editNational, middleware.editNational);
+
+    api.delete('/national', auth0.authenticate, auth1.removeNational, middleware.removeNational);
+
+    api.get('/chapter', auth0.authenticate, auth1.getChapters, middleware.getChapters);
+
+    api.post('/chapter', auth0.authenticate, auth1.createChapter, middleware.createChapter);
+
+    api.put('/chapter', auth0.authenticate, auth1.editChapter, middleware.editChapter);
+
+    api.delete('/chapter', auth0.authenticate, auth1.removeChapter, middleware.removeChapter);
 
     api.get('/user', auth0.authenticate, auth1.getUsers, middleware.getUsers);
+
+    api.put('/user', auth0.authenticate, auth1.editUser, middleware.editUser);
+
+    api.delete('/user', auth0.authenticate, auth1.removeAccount, middleware.removeAccount);
+
+    api.get('/position', auth0.authenticate, auth1.getPositions, middleware.getPositions);
+
+    api.post('/position', auth0.authenticate, auth1.addPosition, middleware.addPosition);
+
+    api.put('/position', auth0.authenticate, auth1.editPosition, middleware.editPosition);
+
+    api.delete('/position', auth0.authenticate, auth1.removePosition, middleware.removePosition);
+
+    api.get('/report', auth0.authenticate, auth1.getReports, middleware.getReports);
+
+    api.post('/report', auth0.authenticate, auth1.createReport, middleware.createReport);
+
+    api.put('/report', auth0.authenticate, auth1.editReport, middleware.editReport);
+
+    api.delete('/report', auth0.authenticate, auth1.removeReport, middleware.removeReport);
+ 
+    api.get('/invite', auth0.authenticate, auth1.getInvitedMembers, middleware.getInvitedMembers);
+
+    api.post('/invite', auth0.authenticate, auth1.inviteMember, middleware.inviteMember);
+
+    api.delete('/invite', auth0.authenticate, auth1.removeInvite, middleware.removeInvite);
+
+
 };

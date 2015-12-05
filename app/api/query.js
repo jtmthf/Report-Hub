@@ -90,6 +90,10 @@ module.exports = function(db) {
 			db.query('DELETE FROM User U WHERE U.Email = ?', [email], callback);
 		},	
 
+		removeInvite: function(email, callback) {
+			db.query('DELETE FROM Invite I WHERE I.Email = ?', [email], callback);
+		},	
+
 		removeChapter: function(chapID, callback) {
 			db.query('DELETE FROM Chapter C WHERE C.ID = ?', [chapID], callback);
 		},
@@ -109,6 +113,10 @@ module.exports = function(db) {
 		removePosition: function(posTitle, chapID, callback) {
 			db.query('DELETE FROM Office O WHERE O.Title = ? AND O.Chapter = ?', [posTitle, chapID], callback);
 		},
+
+		//removeUserFromChapter: function(chapID, email, callback) {
+		//	db.query('DELETE ')
+		//},
 
 		getAllChapters: function(pageNum, pageSize, searchString, callback) {
 			db.query('SELECT C.Name FROM Chapter C WHERE C.Name LIKE ?% OR C.SchoolName LIKE ?% OR C.Nationals LIKE ?% LIMIT ?, ?', [searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
@@ -156,7 +164,40 @@ module.exports = function(db) {
 
 		getPositionByTitle: function(chapID, posTitle, callback) {
 			db.query('SELECT O.Title FROM Office O WHERE O.Title LIKE ?% AND O.Chapter = ?', [posTitle, chapID], callback);
-		}					
+		},
+
+		getInvitesByChapter: function(pageNum, pageSize, chapID, searchString, callback) {
+			db.query('SELECT I.Email FROM Invite I WHERE I.Chapter = ? AND (I.Position LIKE ?% OR I.Nationals LIKE ?% OR I.Role LIKE ?% LIMIT ?, ?', [chapID, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getMeetingByDay: function(mtgDay, callback) {
+			db.query('SELECT M.Day FROM Meeting M WHERE M.Day = ?', [mtgDay], callback);
+		},
+
+		getMeetingByChapter: function(chapID, callback) {
+			db.query('SELECT M.Day FROM Meeting M WHERE M.Chapter = ?', [chapID], callback);
+		},	
+
+		getMeetingByID: function(mtgID, callback)	{
+			db.query('SELECT M.Day FROM Meeting M WHERE M.ID = ?', [mtgID], callback);
+		},
+
+		//user can search by title of report, position of the person who wrote the report, or the text within the report
+		getReportsByChapter: function(pageNum, pageSize, searchString, chapID, callback)	{
+			db.query('SELECT R.Title FROM Report R WHERE R.Chapter = ? AND (R.Title LIKE ?% OR R.Office LIKE ?% or R.Html LIKE %?% LIMIT ?, ?', [chapID, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+		},
+
+		getReportByPosition: function(posTitle, callback) {
+			db.query('SELECT R.Title FROM Report R WHERE R.Office = ?' [posTitle], callback);
+		},
+
+		getReportsByMeeting: function(pageNum, pageSize, mtgID, searchString, callback)	{
+			db.query('SELECT R.Title FROM Report R WHERE R.Meeting = ? AND (R.Title LIKE ?% OR R.Office LIKE ?% or R.Html LIKE %?% LIMIT ?, ?', [mtgID, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);			
+		},
+
+		getReportByID: function(ID, callback) {
+			db.query('SELECT R.Title FROM Report R WHERE R.ID = ?', [ID], callback);
+		}		
 
 	};
 };
