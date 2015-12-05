@@ -66,6 +66,7 @@ module.exports = function(app, pool) {
 			bcrypt.hash(req.body.password, 10, function(err, hash) {
 
 				if (err) {
+					//throw err
 					res.status(500).json({
 						success: false,
 						message: 'Could not hash password',
@@ -78,6 +79,7 @@ module.exports = function(app, pool) {
 					req.body.email,
 					hash, function(err, result) {		
 						if (err) {
+							//throw err
 							return res.status(200).json({
 								success: false,
 								message: 'Could not create user in database',
@@ -817,6 +819,10 @@ module.exports = function(app, pool) {
 		}
 	}
 
+	//needs email and role (student, advisor, etc.) always
+	//If role is student or advisor, chapter must also be included
+	//If role is employee, national must be included
+	//If role is student, posTitle may be optionally included
 	function inviteMember(req, res) {
 		req.checkBody('email', 'Not an email.').isEmail();
 
@@ -828,6 +834,34 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
+		} else {
+			var email = req.body.email;
+			var role = req.body.role;
+			var chapID = req.body.chapID;
+			var natName = req.body.natName;
+			var posTitle = req.body.posTitle;
+
+			if(email && chapID && (role == 'student' || role == 'advisor')) {
+				query.inviteChapMember(email, chapID, role, posTitle, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						invite: result
+					});
+				});				
+			} else if (role == 'employee' && email && natName) {
+				query.inviteEmployee(email, natName, role, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						invite: result
+					});
+				});	
+			}
 		}
 	}
 

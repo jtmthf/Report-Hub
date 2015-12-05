@@ -4,16 +4,6 @@ module.exports = function(pool) {
 
 	var query = require('./query')(pool);
 
-	function createMeeting(req, res, next) {
-		controlsChapter(req, res, next, function() {
-			res.status(403).json({
-				success: false,
-				token: req.token,
-				message: 'Not authorized to create meeting'
-			});
-		});
-	}
-
 	function getUsers(req, res, next) {
 		var permissions = req.permissions;
 
@@ -194,7 +184,13 @@ module.exports = function(pool) {
 	}
 
 	function createMeeting(req, res, next) {
-		next();
+		controlsChapter(req, res, next, function() {
+			res.status(403).json({
+				success: false,
+				token: req.token,
+				message: 'Not authorized to create meeting'
+			});
+		});
 	}
 
 	function editMeeting(req, res, next) {
@@ -344,7 +340,6 @@ module.exports = function(pool) {
 		getNationals: getNationals,
 		createNational: createNational,
 		editNational: editNational,
-		createMeeting: createMeeting,		//done
 		removeNational: removeNational,		//done
 		getMeetings: getMeetings,
 		createMeeting: createMeeting,

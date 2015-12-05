@@ -123,7 +123,7 @@ CREATE TABLE Invite(
 	Chapter     INT, 
 	Position      VARCHAR(64),
 	Nationals    VARCHAR(64),
-	Role         VARCHAR(8),
+	Role         VARCHAR(8)                    NOT NULL,
 	PRIMARY KEY(Email)                         ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(Position, Chapter)             REFERENCES Office(Title, Chapter) ON DELETE SET NULL,
 	FOREIGN KEY(Chapter)                       REFERENCES Chapter(ID) ON DELETE CASCADE,

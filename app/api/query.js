@@ -199,13 +199,17 @@ module.exports = function(db) {
 			db.query('SELECT R.Title FROM Report R WHERE R.ID = ?', [ID], callback);
 		},
 
-		editUserName: function(fname, lname, email, callback) {
-			db.query('UPDATE User SET First=?, Last=? WHERE Email=?', [fname, lname, email], callback);
+		editUser: function(fname, lname, email, newEmail, callback) {
+			db.query('UPDATE User SET First=?, Last=?, Email=? WHERE Email=?', [fname, lname, newEmail, email], callback);
 		},
 
-		editUserEmail: function(new_email, old_email, callback) {
-			db.query('UPDATE User SET Email=? WHERE Email=?', [new_email, old_email], callback);
-		}					
+		inviteChapMember: function(email, chapID, role, posTitle) {
+			db.query('INSERT INTO Invite (Email, Chapter, Position, Role) VALUES (?, ?, ?, ?)', [email, chapID, posTitle, role], callback);
+		},
 
+		inviteEmployee: function(email, natName, role) {
+			db.query('INSERT INTO Invite (Email, Nationals, Role) VALUES (?, ?, ?)', [email, natName, role], callback);
+		}
+				
 	};
 };
