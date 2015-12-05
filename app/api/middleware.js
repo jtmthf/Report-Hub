@@ -415,7 +415,7 @@ module.exports = function(app, pool) {
 					});
 				});					
 			}
-			else if (searchString) {
+			else {
 				query.getAllUsers(pageNumber, pageSize, searchString, function(err, result) {
 					if (err) {
 						throw err;
@@ -482,7 +482,7 @@ module.exports = function(app, pool) {
 						chapters: result
 					});
 				});				
-			} else if(searchString){
+			} else {
 				query.getAllChapters(pageNumber, pageSize, searchString, function(err, result) {
 					if (err) {
 						throw err;
@@ -536,7 +536,7 @@ module.exports = function(app, pool) {
 						nationals: result
 					});
 				});				
-			} else if(searchString){
+			} else {
 				query.getAllNationals(pageNumber, pageSize, searchString, function(err, result) {
 					if (err) {
 						throw err;
@@ -589,7 +589,7 @@ module.exports = function(app, pool) {
 				}
 				return res.status(200).json({
 					success: true,
-					users: result
+					account: result
 				});
 			});
 		}
@@ -617,7 +617,7 @@ module.exports = function(app, pool) {
 				}
 				return res.status(200).json({
 					success: true,
-					users: result
+					chapter: result
 				});
 			});
 		}
@@ -632,7 +632,7 @@ module.exports = function(app, pool) {
 			}
 			return res.status(200).json({
 				success: true,
-				users: result
+				national: result
 			});
 		});
 	}	
@@ -659,7 +659,7 @@ module.exports = function(app, pool) {
 				}
 				return res.status(200).json({
 					success: true,
-					users: result
+					meeting: result
 				});
 			});
 		}
@@ -687,7 +687,7 @@ module.exports = function(app, pool) {
 				}
 				return res.status(200).json({
 					success: true,
-					users: result
+					report: result
 				});
 			});
 		}
@@ -716,7 +716,7 @@ module.exports = function(app, pool) {
 				}
 				return res.status(200).json({
 					success: true,
-					users: result
+					position: result
 				});
 			});
 		}
@@ -817,7 +817,64 @@ module.exports = function(app, pool) {
 
 	function getInvitedMembers(req, res) {
 
+		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
+		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}
+		else {
+
+			var pageNumber = req.body.pageNumber;
+			var pageSize = req.body.pageSize;
+			var searchString = req.body.searchString;
+			var chapID = req.body.chapID;
+
+			query.getInvitesByChapter(pageNumber, pageSize, chapID, searchString, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					invite: result
+				});
+			});
+		}
 	}
+
+	function removeInvite(req, res) {
+		req.checkQuery('email', 'Not an email.').isEmail();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}
+		else {
+
+			var email = req.body.email;
+
+			query.removeInvite(email, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					invite: result
+				});
+			});
+		}
+	}	
 
 	function addPosition(req, res) {
 		req.checkBody('admin', 'Not a boolean value.').isBoolean();
@@ -887,17 +944,186 @@ module.exports = function(app, pool) {
 		}
 	}
 
-	function removeFromChapter(req, res) {
-
-	}
-
 	function editChapter(req, res) {
 
+	//function removeUserFromChapter
+		req.checkQuery('email', 'Not an email.').optional().isEmail();		
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		} else {
+			var email = req.body.email;
+			var chapID = req.body.chapID;
+
+			query.removeUserFromChapter(chapID, email, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					chapter: result
+				});
+			});				
+		}	
+
 	}
 
-	function createNationalOrg(req, res) {
+	function createNational(req, res) {
 
 	}
+
+	function editNational(req, res) {
+
+	}
+
+	function getMeetings(req, res) {
+		req.checkQuery('mtgDay', 'Not a valid date.').optional().isDate();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		} else {
+
+			var chapID = req.body.chapID;
+			var mtgDay = req.body.mtgDay;
+			var mtgID = req.body.mtgID;
+
+			if(chapID) {
+				query.getMeetingByChapter(chapID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						meeting: result
+					});
+				});
+			} else if(mtgDay) {
+				query.getMeetingByDay(mtgDay, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						meeting: result
+					});
+				});				
+			} else if(mtgID) {
+				query.getMeetingByID(mtgID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						meeting: result
+					});
+				});				
+			}			
+		}
+	}	
+
+	function editMeeting(req, res) {
+
+	}
+
+	function createChapter(req, res) {
+
+	}
+
+	function editUser(req, res) {
+
+	}	
+
+	function editPosition(req, res) {
+
+	}
+
+	function getReports(req, res) {
+		req.checkQuery('mtgID', 'Not an integer.').optional().isInt();
+		req.checkQuery('reportID', 'Not an integer.').optional().isInt();
+		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
+		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		} else {
+
+			var chapID = req.body.chapID;
+			var mtgID = req.body.mtgID;
+			var searchString = req.body.searchString;
+			var pageNumber = req.body.pageNumber;
+			var pageSize = req.body.pageSize;
+			var reportID = req.body.reportID;
+			var posTitle = req.body.posTitle;
+
+			if(chapID) {
+				query.getReportsByChapter(pageNumber, pageSize, searchString, chapID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						report: result
+					});
+				});
+			} else if(posTitle) {
+				query.getReportByPosition(posTitle, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						report: result
+					});
+				});				
+			} else if(mtgID) {
+				query.getReportsByMeeting(pageNumber, pageSize, mtgID, searchString, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						report: result
+					});
+				});				
+			} else if (reportID) {
+				query.getReportByID(reportID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						report: result
+					});
+				});				
+			}			
+		}
+	}
+
+	function createReport(req, res) {
+
+	}	
+
+	function editReport(req, res) {
+
+	}				
 
 	return {
 		register: register,
@@ -919,7 +1145,7 @@ module.exports = function(app, pool) {
 		removeFromChapter: removeFromChapter,
 		removePosition: removePosition,
 		editChapter: editChapter,
-		createNationalOrg: createNationalOrg
+		createNational: createNational
 	};
 };
 

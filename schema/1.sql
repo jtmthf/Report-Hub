@@ -114,8 +114,20 @@ CREATE TABLE Token(
 	Token 		CHAR(32),
 	User		VARCHAR(100),
 	Expiration	TIMESTAMP,
-	FOREIGN KEY(User)			REFERENCES User(Email) ON DELETE CASCADE,
+	FOREIGN KEY(User)			                REFERENCES User(Email) ON DELETE CASCADE,
 	PRIMARY KEY(Token)
+) ENGINE=InnoDB;
+
+CREATE TABLE Invite(
+	Email		VARCHAR(100) 				   NOT NULL,
+	Chapter     INT, 
+	Position      VARCHAR(64),
+	Nationals    VARCHAR(64),
+	Role         VARCHAR(8),
+	PRIMARY KEY(Email),
+	FOREIGN KEY(Position, Chapter)             REFERENCES Office(Title, Chapter) ON DELETE SET NULL,
+	FOREIGN KEY(Chapter)                       REFERENCES Chapter(ID) ON DELETE CASCADE,
+	FOREIGN KEY(Nationals)                     REFERENCES National(Name) ON DELETE CASCADE 
 ) ENGINE=InnoDB;
 
 CREATE EVENT clearExpired
