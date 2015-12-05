@@ -14,14 +14,34 @@ class Register extends React.Component {
 		this.state = {first: '', last: '', email: '', password: '', confirmation: ''};
 	}
 
+	handleFirstChange(event) {
+		this.setState({first: event.target.value});
+	}
+
+	handleLastChange(event) {
+		this.setState({last: event.target.value});
+	}
+
+	handleEmailChange(event) {
+		this.setState({email: event.target.value});
+	}
+
+	handlePasswordChange(event) {
+		this.setState({password: event.target.value});
+	}
+
+	handleConfirmationChange(event) {
+		this.setState({confirmation: event.target.value});		
+	}
+
 	render() {
 		return (
 			<Grid>
-				<Col xs={12} md={8}>
+				<Col xs={12} md={8} mdOffset={2}>
 					<Grid fluid={true}>
 						<Panel>
 							<Row>
-								<PageHeader>Register:</PageHeader>
+								<h1 className="text-center">Register:</h1>
 							</Row>
 							<form>
 								<Row>
@@ -29,13 +49,15 @@ class Register extends React.Component {
 										<Input
 											type="text"
 											value={this.state.first}
-											label="First Name:" />
+											label="First Name:" 
+											onChange={this.handleFirstChange} />
 									</Col>
 									<Col xs={12} md={6}>
 										<Input
 											type="text"
 											value={this.state.last}
-											label="Last Name:" />
+											label="Last Name:"
+											onChange={this.handleLastChange} />
 									</Col>									
 								</Row>
 								<Row>
@@ -43,27 +65,32 @@ class Register extends React.Component {
 										<Input
 											type="text"
 											value={this.state.email}
-											label="Email Address:" />
+											label="Email Address:"
+											onChange={this.handleEmailChange} />
 									</Col>
 								</Row>
 								<Row>
 									<Col xs={12}>
 										<Input
-											type="text"
+											type="password"
 											value={this.state.password}
-											label="Password:" />
+											label="Password:" 
+											onChange={this.handlePasswordChange} />
 									</Col>								
 								</Row>
 								<Row>
 									<Col xs={12}>
 										<Input
-											type="text"
+											type="password"
 											value={this.state.confirmation}
-											label="Re-enter Password:" />
+											label="Re-enter Password:"
+											onChange={this.handleConfirmationChange} />
 									</Col>
 								</Row>
 								<Row>
-									
+									<Col xs={12} className="text-center">
+										<ButtonInput type="submit" value="REGISTER" bsSize="large" />
+									</Col>
 								</Row>								
 							</form>
 						</Panel>

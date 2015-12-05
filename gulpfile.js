@@ -39,10 +39,13 @@ gulp.task('public', function() {
 gulp.task('webpack', function() {
 	return gulp.src('app/client/**/*.js')
 		.pipe(webpack({
+			colors: true,
+			entry: './app/client/app.js',
 			output: {
         		filename: 'bundle.js',
         		chunkFilename: '[id].chunk.js'
       		},
+      		watch: true,
       		module: {
 	      		loaders: [
 	      			{
@@ -61,11 +64,11 @@ gulp.task('webpack', function() {
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-	gulp.watch(['app/**/*.js', 'public/js/*.js'], ['lint', 'mocha', 'app-scripts', 'public']);
+	gulp.watch(['app/api/*.js', 'public/*'], ['lint', 'app-scripts', 'public']);
 });
 
 // Deafult Task
 gulp.task('default', ['lint', 'app-scripts', 'public', 'webpack']);
 
 // Watch Task
-gulp.task('watch', ['lint', 'mocha', 'app-scripts', 'public', 'watch']);
+gulp.task('watch', ['lint', 'app-scripts', 'public', 'webpack', 'watch']);
