@@ -550,11 +550,11 @@ module.exports = function(app, pool) {
 		}
 	}
 
-	//change first name, last name, email
-	function editAccount(req, res) {
+	function editUser(req, res) {
 		req.checkBody('fname', 'Not a string.').isAlpha();
 		req.checkBody('lname', 'Not a string.').isAlpha();
 		req.checkBody('email', 'Not an email.').isEmail();
+		req.checkBody('newEmail', 'Not an email.').isEmail();
 
 		var errors = req.validationErrors();
 
@@ -564,10 +564,26 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
+		}else {
+			var fname = req.body.fname;
+			var lname = req.body.lname;
+			var email = req.body.email;
+			var newEmail = req.body.newEmail;
+
+			query.editUser(fname, lname, email, newEmail, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					user: result
+				});
+			});
+			rescopeToken(newEmail);					
 		}
 	}
 
-	function removeAccount(req, res) {
+	function removeUser(req, res) {
 		req.checkQuery('email', 'Not an email.').isEmail();
 
 		var errors = req.validationErrors();
@@ -583,13 +599,13 @@ module.exports = function(app, pool) {
 
 			var email = req.body.email;
 
-			query.removeAccount(email, function(err, result) {
+			query.removeUser(email, function(err, result) {
 				if (err) {
 					throw err;
 				}
 				return res.status(200).json({
 					success: true,
-					account: result
+					user: result
 				});
 			});
 		}
@@ -1039,10 +1055,6 @@ module.exports = function(app, pool) {
 
 	function createChapter(req, res) {
 
-	}
-
-	function editUser(req, res) {
-
 	}	
 
 	function editPosition(req, res) {
@@ -1135,7 +1147,7 @@ module.exports = function(app, pool) {
 		getUsers: getUsers,
 		getChapters: getChapters,
 		getNationals: getNationals,
-		editAccount: editAccount,
+		editUser: editUser,
 		uploadImage: uploadImage,
 		changePassword: changePassword,
 		inviteMember: inviteMember,

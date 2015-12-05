@@ -86,7 +86,7 @@ module.exports = function(db) {
 			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Employee E, National N WHERE U.Email = E.Email AND N.Name = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [natName, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
 		},
 
-		removeAccount: function(email, callback) {
+		removeUser: function(email, callback) {
 			db.query('DELETE FROM User U WHERE U.Email = ?', [email], callback);
 		},	
 
@@ -197,7 +197,15 @@ module.exports = function(db) {
 
 		getReportByID: function(ID, callback) {
 			db.query('SELECT R.Title FROM Report R WHERE R.ID = ?', [ID], callback);
-		}		
+		},
+
+		editUserName: function(fname, lname, email, callback) {
+			db.query('UPDATE User SET First=?, Last=? WHERE Email=?', [fname, lname, email], callback);
+		},
+
+		editUserEmail: function(new_email, old_email, callback) {
+			db.query('UPDATE User SET Email=? WHERE Email=?', [new_email, old_email], callback);
+		}					
 
 	};
 };
