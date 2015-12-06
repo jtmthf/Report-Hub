@@ -9,7 +9,11 @@ var expressValidator   	= require('express-validator')
 var bodyParser     		= require('body-parser');
 var morgan		   		= require('morgan');
 var mysql		   		= require('mysql');
+var upload 				= require('multer');
+
 var app           	 	= express();
+var upload 		 		= multer();
+
 
 var config         		= require('./config');
 
@@ -48,6 +52,10 @@ app.use(expressValidator({
 // use morgan to log requests to the console
 app.use(morgan('dev')); 
 
+// routes ==================================================
+require('./routes')(app, api, pool, upload); // configure our routes
+app.use('/api', api)
+
 // set the static files location eg. /public/img will be /img for users
 app.use(express.static(__dirname + '/public')); 
 
@@ -55,9 +63,6 @@ app.get('*', function (req, res){
  	res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
 });
 
-// routes ==================================================
-require('./routes')(app, api, pool); // configure our routes
-app.use('/api', api)
 
 // start app ===============================================
 // startup our app at http://localhost:8080

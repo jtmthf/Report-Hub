@@ -329,6 +329,10 @@ module.exports = function(pool) {
 		}
 	}
 
+	function uploadAvatar(req, res, next) {
+		next();
+	}
+
 	return {
 		getUsers: getUsers,					//done
 		editUser: editUser,					//done
