@@ -928,7 +928,7 @@ module.exports = function(app, pool) {
 
 	function addPosition(req, res) {
 		req.checkBody('admin', 'Not a boolean value.').isBoolean();
-		req.checkQuery('email', 'Not an email.').optional().isEmail();
+		req.checkBody('email', 'Not an email.').optional().isEmail();
 
 		var errors = req.validationErrors();
 
@@ -1012,9 +1012,7 @@ module.exports = function(app, pool) {
 	}
 
 	function editChapter(req, res) {
-
-	//function removeUserFromChapter
-		req.checkQuery('email', 'Not an email.').optional().isEmail();		
+		req.checkBody('removeUser', 'Not an email.').optional().isEmail();		
 
 		var errors = req.validationErrors();
 
@@ -1025,18 +1023,42 @@ module.exports = function(app, pool) {
 				errors: errors
 			});
 		} else {
-			var email = req.body.email;
+			var removeUser = req.body.removeUser;
 			var chapID = req.body.chapID;
+			var chapName = req.body.chapName;
+			var school = req.body.school;
 
-			query.removeUserFromChapter(chapID, email, function(err, result) {
-				if (err) {
-					throw err;
-				}
-				return res.status(200).json({
-					success: true,
-					chapter: result
+			if(removeUser) {
+				query.removeUserFromChapter(chapID, removeUser, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapter: result
+					});
+				});	
+			} if(chapName) {
+				query.editChapterName(chapID, chapName, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapter: result
+					});
 				});
-			});				
+			} if(school) {
+				query.editChapterSchoolName(chapID, school, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapter: result
+					});
+				});				
+			}			
 		}	
 
 	}

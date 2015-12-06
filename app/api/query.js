@@ -213,6 +213,14 @@ module.exports = function(db) {
 
 		addPosition: function(admin, title, chapID, email, callback) {
 			db.query('INSERT INTO Office (Admin, Title, Chapter, Email) VALUES (?, ?, ?, ?)', [admin, title, chapID, email], callback);
+		},
+
+		editChapterName: function(chapID, chapName, callback) {
+			db.query('UPDATE Chapter SET Name=? WHERE ID=?', [chapName, chapID], callback);
+		},
+
+		editChapterSchoolName: function(chapID, school, callback) {
+			db.query('UPDATE Chapter SET SchoolName=? WHERE ID=?', [school, chapID], callback);
 		}
 				
 	};
