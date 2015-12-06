@@ -1,6 +1,7 @@
 // app/api/middleware.js
 
 module.exports = function(app, pool) {
+	"use strict"
 
 	var query = require('./query')(pool);
 	var bcrypt = require('bcrypt');
@@ -8,7 +9,7 @@ module.exports = function(app, pool) {
 	var jwt = require('jsonwebtoken');
 	var md5 = require('md5');
 	var redis = require('redis');
-	var easyimg = require('easyimage');
+	var easyimage = require('easyimage');
 
 	moment().format();
 	var client = redis.createClient();
@@ -80,7 +81,7 @@ module.exports = function(app, pool) {
 					req.body.name.first,
 					req.body.name.last,
 					req.body.email,
-					hash, function(err, result) {		
+					hash, function(err) {		
 						if (err) {
 							//throw err
 							return res.status(200).json({
@@ -114,7 +115,7 @@ module.exports = function(app, pool) {
 				if (!result[0]) {
 					return res.status(400).json({
 						success: false,
-						message: 'Username or password was incorrect',
+						message: 'Username or password was incorrect'
 					});
 				} else {
 					bcrypt.compare(password, result[0].Password, function(err, bres) {
@@ -189,7 +190,7 @@ module.exports = function(app, pool) {
 				if (!result[0]) {
 					return res.status(400).json({
 						success: false,
-						message: 'Could not find user account',
+						message: 'Could not find user account'
 					});
 				} else {
 					bcrypt.compare(req.body.oldPassword, result[0].Password, function(err, bres) {
@@ -206,7 +207,7 @@ module.exports = function(app, pool) {
 								if (err) {
 									throw err;
 								}
-								query.updatePassword(req.body.email, hash, function(err, result) {		
+								query.updatePassword(req.body.email, hash, function(err) {		
 									if (err) {
 										throw err;
 									}
@@ -276,7 +277,7 @@ module.exports = function(app, pool) {
 				return [req.body.chapter, obj.meetingTitle, obj.meetingDate.toDate()];
 			});
 
-			query.newMeeting(meetings, function(err, result) {
+			query.newMeeting(meetings, function(err) {
 				if (err) {
 					return res.status(500).json({
 						success: false,
@@ -347,7 +348,7 @@ module.exports = function(app, pool) {
 		var token = jwt.sign(scope, app.get('jwtSecret'), {
 			expiresIn: 604800 // expires in 7 days
 		});
-		query.addToken(md5(token), user, moment().add(604800, 's').toDate(), function(err, result) {
+		query.addToken(md5(token), user, moment().add(604800, 's').toDate(), function(err) {
 			if (err && err.code !== "ER_DUP_ENTRY") {
 				throw err; 
 			}
@@ -372,6 +373,8 @@ module.exports = function(app, pool) {
 			});
 		} else {
 
+			// TODO add get user by email, or scrap it by using the search string instead
+			// if scrapped remove email checking from authorize
 			var email = req.body.email;
 			var role = req.body.role;
 			var chapID = req.body.chapID;
@@ -1301,7 +1304,13 @@ module.exports = function(app, pool) {
 		removeFromChapter: removeFromChapter,
 		removePosition: removePosition,
 		editChapter: editChapter,
-		createNational: createNational
+		createNational: createNational,
+		removeUser: removeUser,
+		removeChapter: removeChapter,
+		removeNational: removeNational,
+		removeMeeting: removeMeeting,
+		removeReport: removeReport,
+		removeInvite: removeInvite
 	};
 };
 

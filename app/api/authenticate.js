@@ -1,6 +1,7 @@
 // app/api/authenticate.js
 
 module.exports = function(app, pool) {
+	"use strict"
 
 	var jwt = require('jsonwebtoken');
 	var redis = require('redis');

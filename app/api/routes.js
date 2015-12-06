@@ -1,6 +1,7 @@
 // app/api/routes.js
 
 module.exports = function(app, api, pool, upload) {
+    "use strict"
 
     var auth0        = require('./authenticate.js')(app, pool);
     var auth1        = require('./authorize.js')(pool);
@@ -16,7 +17,7 @@ module.exports = function(app, api, pool, upload) {
 
     api.post('/password', auth0.authenticate, middleware.changePassword);
 
-    api.post('profile', auth0.authURL, auth1.uploadAvatar, upload.single, middleware.uploadAvatar);
+    api.post('/avatar', auth0.authURL, auth1.uploadAvatar, upload.single, middleware.uploadAvatar);
 
     api.post('/meeting', auth0.authenticate, auth1.newMeeting, middleware.newMeeting);
 

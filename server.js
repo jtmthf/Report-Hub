@@ -9,7 +9,7 @@ var expressValidator   	= require('express-validator')
 var bodyParser     		= require('body-parser');
 var morgan		   		= require('morgan');
 var mysql		   		= require('mysql');
-var upload 				= require('multer');
+var multer 				= require('multer');
 
 var app           	 	= express();
 var upload 		 		= multer();
@@ -35,15 +35,19 @@ app.use(bodyParser.json());
 app.use(expressValidator({
 	customValidators: {
 		containsLower: function(value) {
+			"use strict"
 			return /[a-z]/.test(value);
 		},
 		containsUpper: function(value) {
+			"use strict"
 			return /[A-Z]/.test(value);
 		},
 		containsSpecial: function(value) {
+			"use strict"
 			return /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/.test(value);
 		},
 		containsDigit: function(value) {
+			"use strict"
 			return /[0-9]/.test(value);
 		}
 	}
@@ -60,7 +64,8 @@ app.use('/api', api)
 app.use(express.static(__dirname + '/public')); 
 
 app.get('*', function (req, res){
- 	res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+	"use strict"
+	res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
 });
 
 
@@ -70,9 +75,6 @@ https.createServer({
     key: fs.readFileSync('dist/debug/key.pem'),
     cert: fs.readFileSync('dist/debug/cert.pem')
 }, app).listen(port);
-
-// shoutout to the user                     
-console.log('Magic happens on port ' + port);
 
 // expose app           
 exports = module.exports = app;  

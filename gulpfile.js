@@ -2,7 +2,7 @@
 var gulp = require('gulp');
 
 // Include Our Plugins
-var jshint = require('gulp-jshint');
+var eslint = require('gulp-eslint');
 var mocha = require('gulp-mocha');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -11,9 +11,18 @@ var webpack = require('webpack-stream');
 
 // Lint Task
 gulp.task('lint', function() {
-	return gulp.src('app/api/*.js')
-		.pipe(jshint())
-		.pipe(jshint.reporter('default'));
+	return gulp.src(['server.js', 'app/api/*.js'])
+		.pipe(eslint({
+			extends: 'eslint:recommended',
+			rules: {
+				strict: 2
+			},
+			envs: [
+				'node'
+			]
+		}))
+		.pipe(eslint.format())
+		.pipe(eslint.failAfterError());
 });
 
 // Mocha Task
@@ -64,7 +73,7 @@ gulp.task('webpack', function() {
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-	gulp.watch(['app/api/*.js', 'public/*'], ['lint', 'app-scripts', 'public']);
+	gulp.watch(['server.js', 'app/api/*.js'], ['lint', 'app-scripts', 'public']);
 });
 
 // Deafult Task

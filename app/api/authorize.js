@@ -1,6 +1,7 @@
 // app/api/authorize.js
 
 module.exports = function(pool) {
+	"use strict"
 
 	var query = require('./query')(pool);
 
@@ -356,6 +357,7 @@ module.exports = function(pool) {
 		getPositions: getPositions,
 		createPosition: createPosition,
 		editPosition: editPosition,
-		removePosition: removePosition
+		removePosition: removePosition,
+		uploadAvatar: uploadAvatar
 	};
 };
