@@ -928,6 +928,7 @@ module.exports = function(app, pool) {
 
 	function addPosition(req, res) {
 		req.checkBody('admin', 'Not a boolean value.').isBoolean();
+		req.checkQuery('email', 'Not an email.').optional().isEmail();
 
 		var errors = req.validationErrors();
 
@@ -937,6 +938,22 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
+		} else {
+			var admin = req.body.admin;
+			var title = req.body.title;
+			var chapID = req.body.chapID;
+			var email = req.body.email;
+
+			query.addPosition(admin, title, chapID, email, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					position: result
+				});
+			});
+
 		}
 	}
 

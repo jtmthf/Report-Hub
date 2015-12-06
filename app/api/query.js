@@ -203,12 +203,16 @@ module.exports = function(db) {
 			db.query('UPDATE User SET First=?, Last=?, Email=? WHERE Email=?', [fname, lname, newEmail, email], callback);
 		},
 
-		inviteChapMember: function(email, chapID, role, posTitle) {
+		inviteChapMember: function(email, chapID, role, posTitle, callback) {
 			db.query('INSERT INTO Invite (Email, Chapter, Position, Role) VALUES (?, ?, ?, ?)', [email, chapID, posTitle, role], callback);
 		},
 
-		inviteEmployee: function(email, natName, role) {
+		inviteEmployee: function(email, natName, role, callback) {
 			db.query('INSERT INTO Invite (Email, Nationals, Role) VALUES (?, ?, ?)', [email, natName, role], callback);
+		},
+
+		addPosition: function(admin, title, chapID, email, callback) {
+			db.query('INSERT INTO Office (Admin, Title, Chapter, Email) VALUES (?, ?, ?, ?)', [admin, title, chapID, email], callback);
 		}
 				
 	};
