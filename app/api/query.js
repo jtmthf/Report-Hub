@@ -221,7 +221,14 @@ module.exports = function(db) {
 
 		editChapterSchoolName: function(chapID, school, callback) {
 			db.query('UPDATE Chapter SET SchoolName=? WHERE ID=?', [school, chapID], callback);
-		}
-				
+		},
+
+		createChapter: function(chapName, natName, schoolName, callback) {
+			db.query('INSERT INTO Chapter (Name, Nationals, SchoolName) VALUES (?, ?, ?)', [chapName, natName, schoolName], callback);
+		},
+
+		createNational: function(natName, url, callback) {
+			db.query('INSERT INTO National (Name, Url) VALUES (?, ?)', [natName, url], callback);
+		}				
 	};
 };
