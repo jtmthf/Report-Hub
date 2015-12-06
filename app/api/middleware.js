@@ -1244,7 +1244,6 @@ module.exports = function(app, pool) {
 
 	function editReport(req, res) {
 
-<<<<<<< HEAD
 	}	
 
 	function editNational(req, res) {
@@ -1258,8 +1257,6 @@ module.exports = function(app, pool) {
 	function editPosition(req, res) {
 
 	}					
-=======
-	}
 
 	function rescopeToken(user, callback) {
 		var  sql = query.getTokens(user);
@@ -1320,7 +1317,6 @@ module.exports = function(app, pool) {
 			});			
 		});
 	}									
->>>>>>> 3a46657fd0f0fb559db5b16d5a40fed0bbab3599
 
 	return {
 		register: register,
