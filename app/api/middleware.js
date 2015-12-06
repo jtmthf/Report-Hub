@@ -819,10 +819,6 @@ module.exports = function(app, pool) {
 		}
 	}
 
-	//needs email and role (student, advisor, etc.) always
-	//If role is student or advisor, chapter must also be included
-	//If role is employee, national must be included
-	//If role is student, posTitle may be optionally included
 	function inviteMember(req, res) {
 		req.checkBody('email', 'Not an email.').isEmail();
 
@@ -1063,14 +1059,6 @@ module.exports = function(app, pool) {
 
 	}
 
-	function createNational(req, res) {
-
-	}
-
-	function editNational(req, res) {
-
-	}
-
 	function getMeetings(req, res) {
 		req.checkQuery('mtgDay', 'Not a valid date.').optional().isDate();
 
@@ -1121,18 +1109,6 @@ module.exports = function(app, pool) {
 			}			
 		}
 	}	
-
-	function editMeeting(req, res) {
-
-	}
-
-	function createChapter(req, res) {
-
-	}	
-
-	function editPosition(req, res) {
-
-	}
 
 	function getReports(req, res) {
 		req.checkQuery('mtgID', 'Not an integer.').optional().isInt();
@@ -1202,13 +1178,69 @@ module.exports = function(app, pool) {
 		}
 	}
 
+	function createChapter(req, res) {
+		var chapName = req.body.chapName;
+		var natName = req.body.natName;
+		var schoolName = req.body.schoolName;
+
+		query.createChapter(chapName, natName, schoolName, function(err, result) {
+			if (err) {
+				throw err;
+			}
+			return res.status(200).json({
+				success: true,
+				chapter: result
+			});
+		});
+	}	
+
+	//set url and name
+	function createNational(req, res) {
+		req.checkBody('url', 'Not a valid URL.').optional().isURL();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		} else {
+			var url = req.body.url;
+			var natName = req.body.natName;
+
+			query.createNational(natName, url, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					national: result
+				});
+			});
+		}
+	}		
+
 	function createReport(req, res) {
 
-	}	
+	}		
 
 	function editReport(req, res) {
 
-	}				
+	}	
+
+	function editNational(req, res) {
+
+	}
+
+	function editMeeting(req, res) {
+
+	}
+
+	function editPosition(req, res) {
+
+	}					
 
 	return {
 		register: register,
