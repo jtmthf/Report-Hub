@@ -1,6 +1,7 @@
 // app/api/query.js
 
 module.exports = function(db) {
+	"use strict"
 
 	return {
 		register: function(first, last, email, hash, callback) {
@@ -132,9 +133,9 @@ module.exports = function(db) {
 
 		getChapterByUser: function(pageNum, pageSize, email, callback) {
 			db.query("(SELECT C.Name FROM Chapter C, Advisor A WHERE C.ID = A.Chapter AND A.Email = ?) LIMIT ?, ?" +
-					 "UNION" +
-					 "(SELECT C.Name FROM Chapter C, Student S WHERE C.ID = S.Chapter AND S.Email = ?) LIMIT ?, ?",
-					 [email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize], callback);
+					"UNION" +
+					"(SELECT C.Name FROM Chapter C, Student S WHERE C.ID = S.Chapter AND S.Email = ?) LIMIT ?, ?",
+					[email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize], callback);
 		},
 
 		getAllNationals: function(pageNum, pageSize, searchString, callback) {
@@ -147,11 +148,11 @@ module.exports = function(db) {
 
 		getNationalByUser: function(pageNum, pageSize, email, callback) {
 			db.query("(SELECT C.Nationals FROM Chapter C, Advisor A,  WHERE C.ID = A.Chapter AND A.Email = ?) LIMIT ?, ?" +
-					 "UNION" +
-					 "(SELECT C.Nationals FROM Chapter C, Student S WHERE C.ID = S.Chapter AND S.Email = ?) LIMIT ?, ?" +
-					 "UNION" +
-					 "(SELECT E.Nationals FROM Employee E WHERE E.Email = ?) LIMIT ?, ?",
-					 [email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize], callback);
+					"UNION" +
+					"(SELECT C.Nationals FROM Chapter C, Student S WHERE C.ID = S.Chapter AND S.Email = ?) LIMIT ?, ?" +
+					"UNION" +
+					"(SELECT E.Nationals FROM Employee E WHERE E.Email = ?) LIMIT ?, ?",
+					[email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize, email, (pageNum-1)*pageSize, pageSize], callback);
 		},
 
 		getPositionsByChapter: function(pageNum, pageSize, chapID, callback) {

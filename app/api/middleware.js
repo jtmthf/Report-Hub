@@ -375,7 +375,7 @@ module.exports = function(app, pool) {
 
 			// TODO add get user by email, or scrap it by using the search string instead
 			// if scrapped remove email checking from authorize
-			var email = req.body.email;
+			//  var email = req.body.email;
 			var role = req.body.role;
 			var chapID = req.body.chapID;
 			var natName = req.body.natName;
@@ -1242,23 +1242,33 @@ module.exports = function(app, pool) {
 	}		
 
 	function createReport(req, res) {
-
+		return res.status(200).json({
+			success: true
+		});
 	}		
 
 	function editReport(req, res) {
-
+		return res.status(200).json({
+			success: true
+		});
 	}	
 
 	function editNational(req, res) {
-
+		return res.status(200).json({
+			success: true
+		});
 	}
 
 	function editMeeting(req, res) {
-
+		return res.status(200).json({
+			success: true
+		});
 	}
 
 	function editPosition(req, res) {
-
+		return res.status(200).json({
+			success: true
+		});
 	}					
 
 	function rescopeToken(user, callback) {
@@ -1268,7 +1278,7 @@ module.exports = function(app, pool) {
 				throw err;
 			})
 			.on('result', function(row) {
-				client.set(row.Token, 'rescope', function(err, reply) {
+				client.set(row.Token, 'rescope', function(err) {
 					if (err) {
 						throw err;
 					}
@@ -1287,7 +1297,7 @@ module.exports = function(app, pool) {
 				throw err;
 			})
 			.on('result', function(row) {
-				client.set(row.Token, 'logout', function(err, reply) {
+				client.set(row.Token, 'logout', function(err) {
 					if (err) {
 						throw err;
 					}
@@ -1306,13 +1316,13 @@ module.exports = function(app, pool) {
 			cropwidth: 128, cropheight: 128,
 			x: 0, y: 0
 		}).then(
-		function(image) {
+		function() {
 			return res.status(200).json({
 				success: true,
 				token: req.token
 			});			
 		},
-		function(err) {
+		function() {
 			return res.status(400).json({
 				success: false,
 				message: 'Could not upload image',
@@ -1332,13 +1342,11 @@ module.exports = function(app, pool) {
 		getChapters: getChapters,
 		getNationals: getNationals,
 		editUser: editUser,
-		uploadImage: uploadImage,
 		changePassword: changePassword,
 		inviteMember: inviteMember,
 		getInvitedMembers: getInvitedMembers,
 		addPosition: addPosition,
 		getPositions: getPositions,
-		removeFromChapter: removeFromChapter,
 		removePosition: removePosition,
 		editChapter: editChapter,
 		createNational: createNational,
@@ -1347,7 +1355,16 @@ module.exports = function(app, pool) {
 		removeNational: removeNational,
 		removeMeeting: removeMeeting,
 		removeReport: removeReport,
-		removeInvite: removeInvite
+		removeInvite: removeInvite,
+		getMeetings: getMeetings,
+		getReports: getReports,
+		createChapter: createChapter,
+		createReport: createReport,
+		editReport: editReport,
+		editNational: editNational,
+		editMeeting: editMeeting,
+		editPosition: editPosition,
+		uploadAvatar: uploadAvatar
 	};
 };
 
