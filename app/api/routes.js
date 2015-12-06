@@ -46,7 +46,7 @@ module.exports = function(app, api, pool, upload) {
 
     api.put('/user', auth0.authenticate, auth1.editUser, middleware.editUser);
 
-    api.delete('/user', auth0.authenticate, auth1.removeAccount, middleware.removeAccount);
+    api.delete('/user', auth0.authenticate, auth1.removeUser, middleware.removeUser);
 
     api.get('/position', auth0.authenticate, auth1.getPositions, middleware.getPositions);
 

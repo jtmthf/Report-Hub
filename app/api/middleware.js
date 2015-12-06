@@ -69,6 +69,7 @@ module.exports = function(app, pool) {
 			bcrypt.hash(req.body.password, 10, function(err, hash) {
 
 				if (err) {
+					//throw err
 					res.status(500).json({
 						success: false,
 						message: 'Could not hash password',
@@ -81,6 +82,7 @@ module.exports = function(app, pool) {
 					req.body.email,
 					hash, function(err, result) {		
 						if (err) {
+							//throw err
 							return res.status(200).json({
 								success: false,
 								message: 'Could not create user in database',
@@ -640,11 +642,11 @@ module.exports = function(app, pool) {
 		}
 	}
 
-	//change first name, last name, email
-	function editAccount(req, res) {
+	function editUser(req, res) {
 		req.checkBody('fname', 'Not a string.').isAlpha();
 		req.checkBody('lname', 'Not a string.').isAlpha();
 		req.checkBody('email', 'Not an email.').isEmail();
+		req.checkBody('newEmail', 'Not an email.').isEmail();
 
 		var errors = req.validationErrors();
 
@@ -654,10 +656,26 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
+		}else {
+			var fname = req.body.fname;
+			var lname = req.body.lname;
+			var email = req.body.email;
+			var newEmail = req.body.newEmail;
+
+			query.editUser(fname, lname, email, newEmail, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					user: result
+				});
+			});
+			rescopeToken(newEmail);					
 		}
 	}
 
-	function removeAccount(req, res) {
+	function removeUser(req, res) {
 		req.checkQuery('email', 'Not an email.').isEmail();
 
 		var errors = req.validationErrors();
@@ -673,13 +691,13 @@ module.exports = function(app, pool) {
 
 			var email = req.body.email;
 
-			query.removeAccount(email, function(err, result) {
+			query.removeUser(email, function(err, result) {
 				if (err) {
 					throw err;
 				}
 				return res.status(200).json({
 					success: true,
-					account: result
+					user: result
 				});
 			});
 		}
@@ -812,6 +830,10 @@ module.exports = function(app, pool) {
 		}
 	}				
 
+	//needs email and role (student, advisor, etc.) always
+	//If role is student or advisor, chapter must also be included
+	//If role is employee, national must be included
+	//If role is student, posTitle may be optionally included
 	function inviteMember(req, res) {
 		req.checkBody('email', 'Not an email.').isEmail();
 
@@ -823,6 +845,34 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
+		} else {
+			var email = req.body.email;
+			var role = req.body.role;
+			var chapID = req.body.chapID;
+			var natName = req.body.natName;
+			var posTitle = req.body.posTitle;
+
+			if(email && chapID && (role == 'student' || role == 'advisor')) {
+				query.inviteChapMember(email, chapID, role, posTitle, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						invite: result
+					});
+				});				
+			} else if (role == 'employee' && email && natName) {
+				query.inviteEmployee(email, natName, role, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						invite: result
+					});
+				});	
+			}
 		}
 	}
 
@@ -889,6 +939,7 @@ module.exports = function(app, pool) {
 
 	function addPosition(req, res) {
 		req.checkBody('admin', 'Not a boolean value.').isBoolean();
+		req.checkBody('email', 'Not an email.').optional().isEmail();
 
 		var errors = req.validationErrors();
 
@@ -898,6 +949,22 @@ module.exports = function(app, pool) {
 				message: 'Could not validate input fields',
 				errors: errors
 			});
+		} else {
+			var admin = req.body.admin;
+			var title = req.body.title;
+			var chapID = req.body.chapID;
+			var email = req.body.email;
+
+			query.addPosition(admin, title, chapID, email, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					position: result
+				});
+			});
+
 		}
 	}
 
@@ -956,9 +1023,7 @@ module.exports = function(app, pool) {
 	}
 
 	function editChapter(req, res) {
-
-	//function removeUserFromChapter
-		req.checkQuery('email', 'Not an email.').optional().isEmail();		
+		req.checkBody('removeUser', 'Not an email.').optional().isEmail();		
 
 		var errors = req.validationErrors();
 
@@ -969,18 +1034,42 @@ module.exports = function(app, pool) {
 				errors: errors
 			});
 		} else {
-			var email = req.body.email;
+			var removeUser = req.body.removeUser;
 			var chapID = req.body.chapID;
+			var chapName = req.body.chapName;
+			var school = req.body.school;
 
-			query.removeUserFromChapter(chapID, email, function(err, result) {
-				if (err) {
-					throw err;
-				}
-				return res.status(200).json({
-					success: true,
-					chapter: result
+			if(removeUser) {
+				query.removeUserFromChapter(chapID, removeUser, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapter: result
+					});
+				});	
+			} if(chapName) {
+				query.editChapterName(chapID, chapName, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapter: result
+					});
 				});
-			});				
+			} if(school) {
+				query.editChapterSchoolName(chapID, school, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapter: result
+					});
+				});				
+			}			
 		}	
 
 	}
@@ -1049,10 +1138,6 @@ module.exports = function(app, pool) {
 	}
 
 	function createChapter(req, res) {
-
-	}
-
-	function editUser(req, res) {
 
 	}	
 
@@ -1206,7 +1291,7 @@ module.exports = function(app, pool) {
 		getUsers: getUsers,
 		getChapters: getChapters,
 		getNationals: getNationals,
-		editAccount: editAccount,
+		editUser: editUser,
 		uploadImage: uploadImage,
 		changePassword: changePassword,
 		inviteMember: inviteMember,

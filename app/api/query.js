@@ -86,7 +86,7 @@ module.exports = function(db) {
 			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Employee E, National N WHERE U.Email = E.Email AND N.Name = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [natName, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
 		},
 
-		removeAccount: function(email, callback) {
+		removeUser: function(email, callback) {
 			db.query('DELETE FROM User U WHERE U.Email = ?', [email], callback);
 		},	
 
@@ -197,7 +197,31 @@ module.exports = function(db) {
 
 		getReportByID: function(ID, callback) {
 			db.query('SELECT R.Title FROM Report R WHERE R.ID = ?', [ID], callback);
-		}		
+		},
 
+		editUser: function(fname, lname, email, newEmail, callback) {
+			db.query('UPDATE User SET First=?, Last=?, Email=? WHERE Email=?', [fname, lname, newEmail, email], callback);
+		},
+
+		inviteChapMember: function(email, chapID, role, posTitle, callback) {
+			db.query('INSERT INTO Invite (Email, Chapter, Position, Role) VALUES (?, ?, ?, ?)', [email, chapID, posTitle, role], callback);
+		},
+
+		inviteEmployee: function(email, natName, role, callback) {
+			db.query('INSERT INTO Invite (Email, Nationals, Role) VALUES (?, ?, ?)', [email, natName, role], callback);
+		},
+
+		addPosition: function(admin, title, chapID, email, callback) {
+			db.query('INSERT INTO Office (Admin, Title, Chapter, Email) VALUES (?, ?, ?, ?)', [admin, title, chapID, email], callback);
+		},
+
+		editChapterName: function(chapID, chapName, callback) {
+			db.query('UPDATE Chapter SET Name=? WHERE ID=?', [chapName, chapID], callback);
+		},
+
+		editChapterSchoolName: function(chapID, school, callback) {
+			db.query('UPDATE Chapter SET SchoolName=? WHERE ID=?', [school, chapID], callback);
+		}
+				
 	};
 };
