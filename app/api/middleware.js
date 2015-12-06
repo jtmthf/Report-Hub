@@ -7,8 +7,11 @@ module.exports = function(app, pool) {
 	var moment = require('moment');
 	var jwt = require('jsonwebtoken');
 	var md5 = require('md5');
+	var redis = require('redis');
+	var easyimg = require('easyimage');
 
 	moment().format();
+	var client = redis.createClient();
 
 	function register(req, res) {
 
@@ -134,6 +137,93 @@ module.exports = function(app, pool) {
 			});
 
 		}
+	}
+
+	function changePassword(req, res) {
+		req.checkBody({
+			'newPassword' : {
+				notEmpty: true,
+				isLength: {
+					options: [8],
+					errorMessage: 'Must be at least 8 characters'
+				},
+				containsUpper: {
+					errorMessage: 'Must contain at least one upper-case character'
+				},
+				containsLower: {
+					errorMessage: 'Must contain at least one lower-case character'
+				},
+				containsSpecial: {
+					errorMessage: 'Must contain at least one special character'
+				},
+				containsDigit: {
+					errorMessage: 'Must contain at least one digit'
+				},
+				errorMessage : 'Invalid password'
+			},
+			'confirmation' : {
+				equals: req.body.newPassword,
+				errorMessage : 'Confirmation must match password'
+			},
+			'oldPassword' : {
+				notEmpty: true,
+				errorMessage: 'Must include current password'
+			}
+		});
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(400).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		} else {
+			query.getHash(req.permissions.email, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				if (!result[0]) {
+					return res.status(400).json({
+						success: false,
+						message: 'Could not find user account',
+					});
+				} else {
+					bcrypt.compare(req.body.oldPassword, result[0].Password, function(err, bres) {
+						if (err) {
+							throw err;
+						}
+						if (!bres) {
+							res.status(400).json({
+								success: false,
+								message: 'Old password was incorrect'
+							});
+						} else {
+							bcrypt.hash(req.body.newPassword, 10, function(err, hash) {
+								if (err) {
+									throw err;
+								}
+								query.updatePassword(req.body.email, hash, function(err, result) {		
+									if (err) {
+										throw err;
+									}
+									logoutToken(req.body.email, function() {
+										genToken(req.body.email, function(scope, token) {
+											return res.status(200).json({
+												success: true,
+												token: token
+											});
+										});
+									});									
+								});
+
+							});							
+						}
+					});
+				}
+			});
+		}		
 	}
 
 	function newMeeting(req, res) {
@@ -722,85 +812,6 @@ module.exports = function(app, pool) {
 		}
 	}				
 
-	function uploadImage(req, res) {
-		//need to validate that the image is buffer data
-	}
-
-	function changePassword(req, res) {
-		req.checkBody({
-			'oldPassword' : {
-				notEmpty: true,
-				isLength: {
-					options: [8],
-					errorMessage: 'Mmust be at least 8 characters'
-				},
-				containsUpper: {
-					errorMessage: 'Must contain at least one upper-case character'
-				},
-				containsLower: {
-					errorMessage: 'Must contain at least one lower-case character'
-				},
-				containsSpecial: {
-					errorMessage: 'Must contain at least one special character'
-				},
-				containsDigit: {
-					errorMessage: 'Must contain at least one digit'
-				},
-				errorMessage : 'Invalid password'
-			},
-			'newPassword' : {
-				notEmpty: true,
-				isLength: {
-					options: [8],
-					errorMessage: 'Mmust be at least 8 characters'
-				},
-				containsUpper: {
-					errorMessage: 'Must contain at least one upper-case character'
-				},
-				containsLower: {
-					errorMessage: 'Must contain at least one lower-case character'
-				},
-				containsSpecial: {
-					errorMessage: 'Must contain at least one special character'
-				},
-				containsDigit: {
-					errorMessage: 'Must contain at least one digit'
-				},
-				errorMessage : 'Invalid password'
-			},
-			'confirmationPassword' : {
-				notEmpty: true,
-				isLength: {
-					options: [8],
-					errorMessage: 'Mmust be at least 8 characters'
-				},
-				containsUpper: {
-					errorMessage: 'Must contain at least one upper-case character'
-				},
-				containsLower: {
-					errorMessage: 'Must contain at least one lower-case character'
-				},
-				containsSpecial: {
-					errorMessage: 'Must contain at least one special character'
-				},
-				containsDigit: {
-					errorMessage: 'Must contain at least one digit'
-				},
-				errorMessage : 'Invalid password'
-			}
-		});
-
-		var errors = req.validationErrors();
-
-		if (errors) {
-			return res.status(406).json({
-				success: false,
-				message: 'Could not validate input fields',
-				errors: errors
-			});
-		}
-	}
-
 	function inviteMember(req, res) {
 		req.checkBody('email', 'Not an email.').isEmail();
 
@@ -1123,7 +1134,67 @@ module.exports = function(app, pool) {
 
 	function editReport(req, res) {
 
-	}				
+	}
+
+	function rescopeToken(user, callback) {
+		var  sql = query.getTokens(user);
+		sql
+			.on('error', function(err) {
+				throw err;
+			})
+			.on('result', function(row) {
+				client.set(row.Token, 'rescope', function(err, reply) {
+					if (err) {
+						throw err;
+					}
+					client.expire(row.Token, ((Date() - row.Expiration) / 1000).toFixed(0));
+					if (callback) {
+						callback();
+					}
+				});
+			});
+	}
+
+	function logoutToken(user, callback) {
+		var  sql = query.getTokens(user);
+		sql
+			.on('error', function(err) {
+				throw err;
+			})
+			.on('result', function(row) {
+				client.set(row.Token, 'logout', function(err, reply) {
+					if (err) {
+						throw err;
+					}
+					client.expire(row.Token, ((Date() - row.Expiration) / 1000).toFixed(0));
+					if (callback) {
+						callback();
+					}
+				});
+			});
+	}
+
+	function uploadAvatar(req, res) {
+		easyimage.rescrop({
+			src: req.file.destination + req.file.filename, dst: __dirname + '/public/img/avatar/' + req.body.email + '.jpg',
+			width: 500, height: 500,
+			cropwidth: 128, cropheight: 128,
+			x: 0, y: 0
+		}).then(
+		function(image) {
+			return res.status(200).json({
+				success: true,
+				token: req.token
+			});			
+		},
+		function(err) {
+			return res.status(400).json({
+				success: false,
+				message: 'Could not upload image',
+				token: req.token
+			});			
+		});
+	}									
 
 	return {
 		register: register,

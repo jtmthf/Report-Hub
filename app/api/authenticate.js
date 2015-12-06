@@ -49,7 +49,13 @@ module.exports = function(app, pool) {
 		}
 	}
 
+	function authURL(req, res, next) {
+		req.headers.Authorization = req.body.token;
+		authenticate(req, res, next);
+	}
+
 	return {
-		authenticate: authenticate
+		authenticate: authenticate,
+		authURL: authURL
 	};
 };
