@@ -88,13 +88,14 @@ CREATE TABLE Meeting(
 
 CREATE TABLE Report(
 	Html		TEXT,
+	Plain		TEXT,
 	ID			INT 							NOT NULL AUTO_INCREMENT,
 	Title		VARCHAR(128),
-	Created		DATETIME,
+	Created		DATETIME						NOT NULL,
 	Edited		DATETIME,
 	Meeting 	INT 							NOT NULL,
-	Office 		VARCHAR(64),
-	Chapter 	INT,
+	Office 		VARCHAR(64)						NOT NULL,
+	Chapter 	INT								NOT NULL,
 	FOREIGN KEY(Meeting)						REFERENCES Meeting(ID) ON DELETE CASCADE,
 	FOREIGN KEY(Office, Chapter)				REFERENCES Office(Title, Chapter) ON DELETE SET NULL,
 	PRIMARY KEY(ID)

@@ -1242,9 +1242,7 @@ module.exports = function(app, pool) {
 	}		
 
 	function createReport(req, res) {
-		return res.status(200).json({
-			success: true
-		});
+		req.checkBody()
 	}		
 
 	function editReport(req, res) {

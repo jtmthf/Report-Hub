@@ -334,6 +334,18 @@ module.exports = function(pool) {
 		next();
 	}
 
+	function getInvitedMembers(req, res, next) {
+		next();
+	}
+
+	function inviteMember(req, res, next) {
+		next();
+	}
+
+	function removeInvite(req, res, next) {
+		next();
+	}
+
 	return {
 		getUsers: getUsers,					//done
 		editUser: editUser,					//done
@@ -358,6 +370,9 @@ module.exports = function(pool) {
 		createPosition: createPosition,
 		editPosition: editPosition,
 		removePosition: removePosition,
-		uploadAvatar: uploadAvatar
+		uploadAvatar: uploadAvatar,
+		getInvitedMembers: getInvitedMembers,
+		inviteMember: inviteMember,
+		removeInvite: removeInvite
 	};
 };
