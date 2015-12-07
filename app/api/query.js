@@ -230,6 +230,18 @@ module.exports = function(db) {
 
 		createNational: function(natName, url, callback) {
 			db.query('INSERT INTO National (Name, Url) VALUES (?, ?)', [natName, url], callback);
-		}				
+		},
+
+		editNational: function(natName, newName, url, callback)	{
+			db.query('UPDATE National SET Name=?, Url=? WHERE Name=?', [newName, url, natName], callback);
+		},
+
+		editMeeting: function(mtgID, day, title, callback)	{
+			db.query('UPDATE Meeting SET Day=?, Title=? WHERE ID=?', [day, title, mtgID], callback);
+		},
+
+		editPosition: function(title, newTitle, admin, email, chapID, callback) {
+			db.query('UPDATE Office SET Title=?, Admin=?, Email=? WHERE Title=? AND Chapter=?', [newTitle, admin, email, title, chapID], callback);
+		}			
 	};
 };
