@@ -91,7 +91,6 @@ CREATE TABLE Report(
 	Html		TEXT,
 	Plain		TEXT,
 	ID			INT 							NOT NULL AUTO_INCREMENT,
-	Title		VARCHAR(128),
 	Created		DATETIME						NOT NULL,
 	Edited		DATETIME,
 	Meeting 	INT 							NOT NULL,

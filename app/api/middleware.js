@@ -10,6 +10,7 @@ module.exports = function(app, pool) {
 	var md5 = require('md5');
 	var redis = require('redis');
 	var easyimage = require('easyimage');
+	var sanitizeHtml = require('sanitize-html');
 
 	moment().format();
 	var client = redis.createClient();
@@ -1242,12 +1243,41 @@ module.exports = function(app, pool) {
 	}		
 
 	function createReport(req, res) {
-		req.checkBody()
+		// required fields Meeting, Office, Chapter
+		// optional Html
+		var plain = '';
+		sanitizeHtml(req.body.html, {
+			textFilter: function(text) {
+				plain += ' ' + text;
+			}
+		});
+
+		query.createReport(req.body.html, plain, Date(), req.body.meeting, req.body.office, req.body.chapter, function(err) {
+			if (err) {
+				throw err;
+			}
+			return res.status(200).json({
+				success: true
+			});
+		});
 	}		
 
 	function editReport(req, res) {
-		return res.status(200).json({
-			success: true
+		req.checkBody('reportID', 'Need ID of report').notEmpty().isInt();
+		var plain = '';
+		sanitizeHtml(req.body.html, {
+			textFilter: function(text) {
+				plain += ' ' + text;
+			}
+		});
+
+		query.editReport(req.body.html, plain, Date(), req.body.meeting, req.body.office, req.body.reportID, function(err) {
+			if (err) {
+				throw err;
+			}
+			return res.status(200).json({
+				success: true
+			});
 		});
 	}	
 
