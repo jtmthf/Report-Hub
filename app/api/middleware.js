@@ -1252,21 +1252,122 @@ module.exports = function(app, pool) {
 	}	
 
 	function editNational(req, res) {
-		return res.status(200).json({
-			success: true
-		});
+		req.checkBody('url', 'Not a valid URL.').notEmpty().isURL();
+		req.checkBody('name', 'Should not be empty.').notEmpty();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}else {
+			var url = req.body.url;
+			var name = req.body.name;
+			var newName = req.body.newName;
+
+			if(newName) {
+				query.editNational(name, newName, url, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						national: result
+					});
+				});				
+			} else {
+				query.editNational(name, name, url, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						national: result
+					});
+				});
+			}
+				
+		}
 	}
 
+	//edit day, title - assume both are included and edit both of them automatically
 	function editMeeting(req, res) {
-		return res.status(200).json({
-			success: true
-		});
+		req.checkBody('day', 'Not a valid URL.').notEmpty().isDate();
+		req.checkBody('title', 'Should not be empty.').notEmpty();
+		req.checkBody('mtgID', 'Not an integer.').notEmpty().isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}else {
+			var day = req.body.day;
+			var title = req.body.title;
+			var mtgID = req.body.mtgID;
+
+			query.editMeeting(mtgID, day, title, function(err, result) {
+				if (err) {
+					throw err;
+				}
+				return res.status(200).json({
+					success: true,
+					meeting: result
+				});
+			});				
+				
+		}
 	}
 
 	function editPosition(req, res) {
-		return res.status(200).json({
-			success: true
-		});
+		req.checkBody('email', 'Not a valid email.').isEmail();
+		req.checkBody('title', 'Should not be empty.').notEmpty();
+		req.checkBody('admin', 'Not an integer.').notEmpty().isInt();
+		req.checkBody('chapID', 'Not an integer.').notEmpty().isInt();
+
+		var errors = req.validationErrors();
+
+		if (errors) {
+			return res.status(406).json({
+				success: false,
+				message: 'Could not validate input fields',
+				errors: errors
+			});
+		}else {
+			var email = req.body.email;
+			var title = req.body.title;
+			var admin = req.body.admin;
+			var chapID = req.body.chapID;
+			var newTitle = req.body.newTitle;
+
+			if(newTitle) {
+				query.editPosition(title, newTitle, admin, email, chapID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						position: result
+					});
+				});					
+			} else {
+				query.editPosition(title, title, admin, email, chapID, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						position: result
+					});
+				});	
+			}				
+		}
 	}					
 
 	function rescopeToken(user, callback) {

@@ -14,7 +14,7 @@ CREATE TABLE Chapter(
 	Xhtml		VARCHAR(255)					DEFAULT 'assets/xhmtl/default.xhmtl',
 	Nationals	VARCHAR(64)						NOT NULL,
 	SchoolName  VARCHAR(100),
-	FOREIGN KEY(Nationals)						REFERENCES National(Name) ON DELETE CASCADE,
+	FOREIGN KEY(Nationals)						REFERENCES National(Name) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY(ID)
 ) ENGINE=InnoDB;
 
@@ -45,7 +45,7 @@ CREATE TABLE Employee(
 	Email		VARCHAR(100)					NOT NULL,
 	Nationals	VARCHAR(64)						NOT NULL,
 	FOREIGN KEY(Email)		 					REFERENCES User(Email) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY(Nationals)						REFERENCES National(Name) ON DELETE CASCADE
+	FOREIGN KEY(Nationals)						REFERENCES National(Name) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE Advisor(
@@ -82,6 +82,7 @@ CREATE TABLE Meeting(
 	ID			INT 							NOT NULL AUTO_INCREMENT,
 	Day			DATETIME,
 	Chapter 	INT 							NOT NULL,
+	Title       VARCHAR(100)                    NOT NULL,
 	FOREIGN KEY(Chapter)						REFERENCES Chapter(ID) ON DELETE CASCADE,
 	PRIMARY KEY(ID)
 ) ENGINE=InnoDB;
@@ -128,7 +129,7 @@ CREATE TABLE Invite(
 	PRIMARY KEY(Email)                         ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(Position, Chapter)             REFERENCES Office(Title, Chapter) ON DELETE SET NULL,
 	FOREIGN KEY(Chapter)                       REFERENCES Chapter(ID) ON DELETE CASCADE,
-	FOREIGN KEY(Nationals)                     REFERENCES National(Name) ON DELETE CASCADE 
+	FOREIGN KEY(Nationals)                     REFERENCES National(Name) ON DELETE CASCADE ON UPDATE CASCADE 
 ) ENGINE=InnoDB;
 
 CREATE EVENT clearExpired
