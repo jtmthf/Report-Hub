@@ -11,7 +11,6 @@ const rootRoute = {
 	childRoutes: [{
 		path: '/',
 		component: require('./components/App'),
-		indexRoute: require('./components/Welcome'),
 		childRoutes: [
 			require('./routes/Register'),
 			require('./routes/Login')

@@ -41,7 +41,7 @@ gulp.task('app-scripts', function() {
 
 // Concatenate & Minify Public JS
 gulp.task('public', function() {
-	return gulp.src('public/*')
+	return gulp.src('public/**/*')
 		.pipe(gulp.dest('dist/debug/public'))
 });
 
