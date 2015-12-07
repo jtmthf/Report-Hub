@@ -242,6 +242,10 @@ module.exports = function(db) {
 
 		editPosition: function(title, newTitle, admin, email, chapID, callback) {
 			db.query('UPDATE Office SET Title=?, Admin=?, Email=? WHERE Title=? AND Chapter=?', [newTitle, admin, email, title, chapID], callback);
-		}			
+		},
+	
+		getTokens: function(email) {
+			return db.query('SELECT * FROM Token T WHERE T.User = ?', [email]);
+		}		
 	};
 };
