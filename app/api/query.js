@@ -250,6 +250,10 @@ module.exports = function(db) {
 
 		editReport: function(html, plain, edited, meeting, office, reportID, callback) {
 			db.query('UPDATE Report SET Html=?, Plain=?, Edited=?, Office=?, Meeting=? WHERE ID=?', [html, plain, edited, meeting, office, reportID], callback);
-		}					
+		},					
+
+		getTokens: function(email) {
+			return db.query('SELECT * FROM Token T WHERE T.User = ?', [email]);
+		}		
 	};
 };
