@@ -19,7 +19,7 @@ module.exports = function(app, api, pool, upload) {
 
     api.post('/avatar', auth0.authURL, auth1.uploadAvatar, upload.single, middleware.uploadAvatar);
 
-    api.post('/meeting', auth0.authenticate, auth1.newMeeting, middleware.newMeeting);
+    api.post('/meeting', auth0.authenticate, auth1.createMeeting, middleware.newMeeting);
 
     api.get('/meeting', auth0.authenticate, auth1.getMeetings, middleware.getMeetings);
 
@@ -51,7 +51,7 @@ module.exports = function(app, api, pool, upload) {
 
     api.get('/position', auth0.authenticate, auth1.getPositions, middleware.getPositions);
 
-    api.post('/position', auth0.authenticate, auth1.addPosition, middleware.addPosition);
+    api.post('/position', auth0.authenticate, auth1.createPosition, middleware.addPosition);
 
     api.put('/position', auth0.authenticate, auth1.editPosition, middleware.editPosition);
 

@@ -58,7 +58,7 @@ app.use(morgan('dev'));
 
 // routes ==================================================
 require('./routes')(app, api, pool, upload); // configure our routes
-app.use('/api', api)
+app.use('/api', api);
 
 // set the static files location eg. /public/img will be /img for users
 app.use(express.static(__dirname + '/public')); 

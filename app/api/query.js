@@ -243,7 +243,15 @@ module.exports = function(db) {
 		editPosition: function(title, newTitle, admin, email, chapID, callback) {
 			db.query('UPDATE Office SET Title=?, Admin=?, Email=? WHERE Title=? AND Chapter=?', [newTitle, admin, email, title, chapID], callback);
 		},
-	
+
+		createReport: function(html, plain, created, meeting, office, chapter, callback) {
+			db.query('INSERT INTO Report (Html, Plain, Created, Meeting, Office, Chapter) VALUES (?,?,?,?,?,?)', [html, plain, created, meeting, office, chapter], callback);
+		},
+
+		editReport: function(html, plain, edited, meeting, office, reportID, callback) {
+			db.query('UPDATE Report SET Html=?, Plain=?, Edited=?, Office=?, Meeting=? WHERE ID=?', [html, plain, edited, meeting, office, reportID], callback);
+		},					
+
 		getTokens: function(email) {
 			return db.query('SELECT * FROM Token T WHERE T.User = ?', [email]);
 		}		
