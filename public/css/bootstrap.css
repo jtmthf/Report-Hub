@@ -5,8 +5,8 @@
  */
 
 /*!
- * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=42006c2d75453d4649d7)
- * Config saved to config.json and https://gist.github.com/42006c2d75453d4649d7
+ * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=61893b60241ddb9fd241)
+ * Config saved to config.json and https://gist.github.com/61893b60241ddb9fd241
  */
 /*!
  * Bootstrap v3.3.6 (http://getbootstrap.com)
@@ -4322,8 +4322,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-default {
-  background-color: #f8f8f8;
-  border-color: #e7e7e7;
+  background-color: #e6e8ea;
+  border-color: #d4d7db;
 }
 .navbar-default .navbar-brand {
   color: #2c3e50;
@@ -4348,7 +4348,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
   color: #99b0c7;
-  background-color: #e7e7e7;
+  background-color: #d4d7db;
 }
 .navbar-default .navbar-nav > .disabled > a,
 .navbar-default .navbar-nav > .disabled > a:hover,
@@ -4368,12 +4368,12 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
-  border-color: #e7e7e7;
+  border-color: #d4d7db;
 }
 .navbar-default .navbar-nav > .open > a,
 .navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
-  background-color: #e7e7e7;
+  background-color: #d4d7db;
   color: #99b0c7;
 }
 @media (max-width: 767px) {
@@ -4389,7 +4389,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
   .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
     color: #99b0c7;
-    background-color: #e7e7e7;
+    background-color: #d4d7db;
   }
   .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a,
   .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover,
@@ -4677,7 +4677,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   font-size: 75%;
   font-weight: bold;
   line-height: 1;
-  color: #ffffff;
+  color: #2c3e50;
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
@@ -4685,7 +4685,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 }
 a.label:hover,
 a.label:focus {
-  color: #ffffff;
+  color: #2c3e50;
   text-decoration: none;
   cursor: pointer;
 }

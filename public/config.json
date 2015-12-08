@@ -147,7 +147,7 @@
     "@navbar-padding-vertical": "((@navbar-height - @line-height-computed) / 2)",
     "@navbar-collapse-max-height": "340px",
     "@navbar-default-color": "rgb(230,232,234)",
-    "@navbar-default-bg": "#f8f8f8",
+    "@navbar-default-bg": "rgb(230,232,234)",
     "@navbar-default-border": "darken(@navbar-default-bg, 6.5%)",
     "@navbar-default-link-color": "rgb(44,62,80)",
     "@navbar-default-link-hover-color": "rgb(16,23,30)",
@@ -251,8 +251,8 @@
     "@label-info-bg": "@brand-info",
     "@label-warning-bg": "@brand-warning",
     "@label-danger-bg": "@brand-danger",
-    "@label-color": "#fff",
-    "@label-link-hover-color": "#fff",
+    "@label-color": "rgb(44,62,80)",
+    "@label-link-hover-color": "rgb(44,62,80)",
     "@modal-inner-padding": "15px",
     "@modal-title-padding": "15px",
     "@modal-title-line-height": "@line-height-base",
@@ -412,5 +412,5 @@
     "close.less"
   ],
   "js": [],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=42006c2d75453d4649d7"
+  "customizerUrl": "http://getbootstrap.com/customize/?id=61893b60241ddb9fd241"
 }
