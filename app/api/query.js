@@ -16,7 +16,7 @@ module.exports = function(db) {
 
 		//Inserts array of meetings into meeting table
 		newMeeting: function(meetings, callback) {
-			db.query('', meetings, callback);
+			db.query('INSERT INTO Meeting (Chapter, Title, Day) VALUES(?)', meetings, callback);
 		},
 
 		//Gets the permissions of each user

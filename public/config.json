@@ -1,6 +1,6 @@
 {
   "vars": {
-    "@gray-base": "#fff",
+    "@gray-base": "rgb(44,62,80)",
     "@gray-darker": "lighten(@gray-base, 13.5%)",
     "@gray-dark": "lighten(@gray-base, 20%)",
     "@gray": "lighten(@gray-base, 33.5%)",
@@ -63,7 +63,7 @@
     "@table-bg-active": "@table-bg-hover",
     "@table-border-color": "#ddd",
     "@btn-font-weight": "normal",
-    "@btn-default-color": "rgb(235,108,95)",
+    "@btn-default-color": "#fff",
     "@btn-default-bg": "rgb(235,108,95)",
     "@btn-default-border": "rgb(235,108,95)",
     "@btn-primary-color": "rgb(235,108,95)",
@@ -412,5 +412,5 @@
     "close.less"
   ],
   "js": [],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=61893b60241ddb9fd241"
+  "customizerUrl": "http://getbootstrap.com/customize/?id=729d22883cae23ba78bf"
 }

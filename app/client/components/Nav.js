@@ -4,7 +4,7 @@ import Nav    from 'react-bootstrap/lib/Nav';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import Welcome from './Welcome'
 
-class App extends React.Component {
+class AppNav extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -21,9 +21,8 @@ class App extends React.Component {
 		this.props.history.pushState(null, '/login')
 	}
 
-	handleHome(event) {
+	handleHome() {
 		this.props.history.pushState(null, '/')
-		event.stop
 	}
 
 	render() {
@@ -53,4 +52,4 @@ class App extends React.Component {
 	}
 }
 
-module.exports = App;
+module.exports = AppNav;

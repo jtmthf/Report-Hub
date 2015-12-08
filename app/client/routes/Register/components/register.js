@@ -11,6 +11,12 @@ class Register extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {first: '', last: '', email: '', password: '', confirmation: ''};
+		this.handleFirstChange = this.handleFirstChange.bind(this);
+		this.handleLastChange = this.handleLastChange.bind(this);
+		this.handleEmailChange= this.handleEmailChange.bind(this);
+		this.handlePasswordChange = this.handlePasswordChange.bind(this);
+		this.handleConfirmationChange = this.handleConfirmationChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	handleFirstChange(event) {
@@ -33,6 +39,32 @@ class Register extends React.Component {
 		this.setState({confirmation: event.target.value});		
 	}
 
+	handleSubmit() {
+		let data = {
+			name: {
+				first: this.state.first,
+				last: this.state.last
+			},
+			email: this.state.email,
+			password: this.state.password,
+			confirmation: this.state.confirmation
+		}
+		let that = this;
+
+		$.ajax({
+			type: 'POST',
+			url: 'https://localhost:8443/api/register',
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json',
+			data: JSON.stringify(data)
+		}).done(function (data) {
+			sessionStorage.setItem('token', data.token);
+			that.props.history.pushState(null, '/app');
+		}).fail( function (jqXHR, textStatus, errorThrown) {
+
+		});
+	}
+
 	render() {
 		return (
 			<Grid>
@@ -40,7 +72,7 @@ class Register extends React.Component {
 					<Grid fluid={true}>
 						<Panel>
 							<Row>
-								<h1 className="text-center">Register:</h1>
+								<h1 className="text-center" style={{fontFamily: "mohave"}}>Register:</h1>
 							</Row>
 							<form>
 								<Row>
@@ -87,8 +119,8 @@ class Register extends React.Component {
 									</Col>
 								</Row>
 								<Row>
-									<Col xs={12} className="text-center">
-										<ButtonInput type="submit" value="REGISTER" bsSize="large" />
+									<Col xs={12} className="text-center" style={{fontFamily: "mohave"}}>
+										<ButtonInput value="REGISTER" bsSize="large" onClick={this.handleSubmit}/>
 									</Col>
 								</Row>								
 							</form>
