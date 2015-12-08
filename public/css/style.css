@@ -1,0 +1,16 @@
+@font-face {
+	font-family: mohave;
+	src: url(../fonts/mohave-webfont.woff);
+}
+@font-face {
+	font-family: junctionLight;
+	src: url(../fonts/Junction-light.woff);
+}
+@font-face {
+	font-family: "Circula Thin";
+	src: url(../fonts/circula-medium.woff);
+}
+
+.control-label {
+	font-family: junctionLight;
+}
