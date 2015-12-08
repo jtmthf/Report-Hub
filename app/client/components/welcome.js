@@ -1,22 +1,28 @@
 var React = require('react');
-import Jumbotron from 'react-bootstrap/lib/Jumbotron';
+import Grid from 'react-bootstrap/lib/Grid';
+import Col from 'react-bootstrap/lib/Col';
+import Jumbotron from 'react-bootstrap/lib/Jumbotron'
+
 
 class Welcome extends React.Component {
-/*
-	const jumbotronInstance = (
-		<Jumbotron>
-			<h1>Streamline Your Chapter Reporting.</h1>
-		</Jumbotron>
-	);
+	constructor(props) {
+		super(props)
+		this.backGroundStyle = {
+			backgroundImage: 'url(img/welcome.jpg)',
+			height: '100vh'
+		}
+	}
 
-	const responsiveEmbedInstance = (
-	  <div style={{width: 660, height: 'auto'}}>
-	    <ResponsiveEmbed a16by9>
-	      <embed type="image/svg+xml" src="img/welcome_picture.jpg" />
-	    </ResponsiveEmbed>
-	  </div>
-);
-*/
+	render() {
+		return (
+			<Grid fluid={true} style={this.backGroundStyle}>
+				<Jumbotron style={{marginTop: 200, borderRadius: 25, backgroundColor: 'rgba(52,73,94,0.74)'}}>
+					<h1 className="text-center" style={{color: 'white'}}>STREAMLINE YOUR CHAPTER REPORTING.</h1>
+				</Jumbotron>
+			</Grid>
+		);
+	}
+
 }
 
 module.exports = Welcome;
