@@ -451,7 +451,7 @@ module.exports = function(app, pool) {
 				}
 			}
 			else if (role == 'admin') {
-				query.getUserByAdvisorRole(pageNumber, pageSize, searchString, function(err, result) {
+				query.getUserByAdminRole(pageNumber, pageSize, searchString, function(err, result) {
 					if (err) {
 						throw err;
 					}
@@ -496,17 +496,6 @@ module.exports = function(app, pool) {
 					});
 				});					
 			}	
-			else if (natName) {
-				query.getUserByNational(pageNumber, pageSize, searchString, natName, function(err, result) {
-					if (err) {
-						throw err;
-					}
-					return res.status(200).json({
-						success: true,
-						users: result
-					});
-				});					
-			}
 			else {
 				query.getAllUsers(pageNumber, pageSize, searchString, function(err, result) {
 					if (err) {
@@ -565,7 +554,7 @@ module.exports = function(app, pool) {
 					});
 				});				
 			} else if(email) {
-				query.getChapterByUser(pageNumber, pageSize, email, function(err, result) {
+				query.getChapterByUser(email, function(err, result) {
 					if (err) {
 						throw err;
 					}
@@ -619,7 +608,7 @@ module.exports = function(app, pool) {
 					});
 				});			
 			} else if(email) {
-				query.getNationalByUser(pageNumber, pageSize, email, function(err, result) {
+				query.getNationalByUser(email, function(err, result) {
 					if (err) {
 						throw err;
 					}
@@ -1024,7 +1013,8 @@ module.exports = function(app, pool) {
 	}
 
 	function editChapter(req, res) {
-		req.checkBody('removeUser', 'Not an email.').optional().isEmail();		
+		req.checkBody('removeStudent', 'Not an email.').optional().isEmail();		
+		req.checkBody('removeAdvisor', 'Not an email.').optional().isEmail();
 
 		var errors = req.validationErrors();
 
@@ -1035,13 +1025,14 @@ module.exports = function(app, pool) {
 				errors: errors
 			});
 		} else {
-			var removeUser = req.body.removeUser;
+			var removeStudent = req.body.removeStudent;
+			var removeAdvisor = req.body.removeAdvisor;
 			var chapID = req.body.chapID;
 			var chapName = req.body.chapName;
 			var school = req.body.school;
 
-			if(removeUser) {
-				query.removeUserFromChapter(chapID, removeUser, function(err, result) {
+			if(removeStudent) {
+				query.removeStudentFromChapter(chapID, removeStudent, function(err, result) {
 					if (err) {
 						throw err;
 					}
@@ -1049,7 +1040,17 @@ module.exports = function(app, pool) {
 						success: true,
 						chapter: result
 					});
-				});	
+				});
+			} if(removeAdvisor) {
+				query.removeAdvisorFromChapter(chapID, removeAdvisor, function(err, result) {
+					if (err) {
+						throw err;
+					}
+					return res.status(200).json({
+						success: true,
+						chapter: result
+					});
+				});					
 			} if(chapName) {
 				query.editChapterName(chapID, chapName, function(err, result) {
 					if (err) {
@@ -1492,4 +1493,5 @@ module.exports = function(app, pool) {
 		uploadAvatar: uploadAvatar
 	};
 };
+
 
