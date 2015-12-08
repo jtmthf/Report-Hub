@@ -51,16 +51,12 @@ module.exports = function(app, pool) {
 					errorMessage: 'Must contain at least one digit'
 				},
 				errorMessage : 'Invalid password'
-			},
-			'confirmation' : {
-				equals: req.body.password,
-				errorMessage : 'Confirmation must match password'
 			}
 		});
 
 		var errors = req.validationErrors();
 
-		if (errors) {
+		if (errors || req.body.password != req.body.confirmation) {
 			return res.status(400).json({
 				success: false,
 				message: 'Could not validate input fields',

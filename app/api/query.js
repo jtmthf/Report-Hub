@@ -13,7 +13,7 @@ module.exports = function(db) {
 		},
 
 		newMeeting: function(meetings, callback) {
-			db.query('', meetings, callback);
+			db.query('INSERT INTO Meeting (Chapter, Title, Day) VALUES(?)', meetings, callback);
 		},
 
 		getScope: function(user, callback) {
