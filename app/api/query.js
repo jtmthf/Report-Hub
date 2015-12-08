@@ -231,8 +231,8 @@ module.exports = function(db) {
 		},
 
 		//Gets all the meetings that have been held by a chapter
-		getMeetingByChapter: function(chapID, callback) {
-			db.query('SELECT M.Day FROM Meeting M WHERE M.Chapter = ?', [chapID], callback);
+		getMeetingByChapter: function(pageNum, pageSize, chapID, callback) {
+			db.query('SELECT M.Day FROM Meeting M WHERE M.Chapter = ? LIMIT ?, ?', [chapID, (pageNum-1)*pageSize, pageSize], callback);
 		},	
 
 		//Gets a meeting using its ID

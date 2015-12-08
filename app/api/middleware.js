@@ -1463,6 +1463,8 @@ module.exports = function(app, pool) {
 	function getMeetings(req, res) {
 		//Validate input parameters
 		req.checkQuery('mtgDay', 'Not a valid date.').optional().isDate();
+		req.checkQuery('pageNumber', 'Not an integer.').optional().isInt();
+		req.checkQuery('pageSize', 'Not an integer.').optional().isInt();
 
 		var errors = req.validationErrors();
 
@@ -1478,11 +1480,13 @@ module.exports = function(app, pool) {
 			var chapID = req.body.chapID;
 			var mtgDay = req.body.mtgDay;
 			var mtgID = req.body.mtgID;
+			var pageNumber = req.body.pageNumber;
+			var pageSize = req.body.pageSize;
 
 			//If we want to get all the meetings that a chapter has held
 			if(chapID) {
 				//Call the query function to get the meetings from the database using the chapter ID
-				query.getMeetingByChapter(chapID, function(err, result) {
+				query.getMeetingByChapter(pageNumber, pageSize, chapID, function(err, result) {
 					if (err) {
 						throw err;
 					}
