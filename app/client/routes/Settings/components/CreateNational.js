@@ -45,7 +45,7 @@ class CreateNational extends React.Component {
 		}).done(function (data) {
 
 		}).fail( function (jqXHR, textStatus, errorThrown) {
-			alert('Register Failed!');
+			alert('handleSubmit for CreateNational Failed!');
 		});			
 	}
 
