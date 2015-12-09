@@ -794,6 +794,21 @@ module.exports = function(app, pool) {
 		}
 	}
 
+	function getNumNationals(req, res) {
+		var natName = req.body.natName;
+
+		query.getNumNationals(natName, function(err, result) {
+			if (err) {
+				throw err;
+			}
+			return res.status(200).json({
+				success: true,
+				national: result
+			});
+		});	
+
+	}		
+
 	//Function to create a new national organization
 	function createNational(req, res) {
 		//Validate input parameters
@@ -1522,7 +1537,22 @@ module.exports = function(app, pool) {
 				});				
 			}			
 		}
-	}		
+	}
+
+	function getNumMeetings	(req, res) {
+		var chapID = req.body.chapID;
+
+		query.getMeetingByChapterCount(chapID, function(err, result) {
+			if (err) {
+				throw err;
+			}
+			return res.status(200).json({
+				success: true,
+				meeting: result
+			});
+		});	
+
+	}	
 
 	//Function to create a new meeting
 	function newMeeting(req, res) {
@@ -1674,6 +1704,7 @@ module.exports = function(app, pool) {
 		inviteMember: inviteMember,
 		removeInvite: removeInvite,
 		getNationals: getNationals,
+		getNumNationals: getNumNationals,
 		createNational: createNational,
 		editNational: editNational,
 		removeNational: removeNational,
@@ -1695,6 +1726,7 @@ module.exports = function(app, pool) {
 		editReport: editReport,
 		removeReport: removeReport,
 		getMeetings: getMeetings,
+		getNumMeetings: getNumMeetings,
 		newMeeting: newMeeting,
 		editMeeting: editMeeting,
 		removeMeeting: removeMeeting
