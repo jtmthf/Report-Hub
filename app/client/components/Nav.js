@@ -4,7 +4,8 @@ import Nav    from 'react-bootstrap/lib/Nav';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
-import ButtonInput from 'react-bootstrap/lib/ButtonInput';
+import Button from 'react-bootstrap/lib/ButtonInput';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 import Welcome from './Welcome'
 
 class AppNav extends React.Component {
@@ -31,7 +32,7 @@ class AppNav extends React.Component {
 	}
 
 	handleSettings() {
-		this.props.history.pushState(null, 'settings')
+		this.props.history.pushState(null, '/settings')
 	}
 
 	handleLogout() {
@@ -62,8 +63,10 @@ class AppNav extends React.Component {
 	buildLoggedOutRightNav() {
 		return (
 			<Navbar.Form>
-				<ButtonInput onClick={this.handleRegister}>Register</ButtonInput>
-				<ButtonInput onClick={this.handleLogin}>Login</ButtonInput>
+				<ButtonToolbar>
+					<Button onClick={this.handleRegister}>Register</Button>
+					<Button onClick={this.handleLogin}>Login</Button>
+				</ButtonToolbar>
 			</Navbar.Form>
 		);
 	}
