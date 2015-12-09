@@ -43,7 +43,7 @@ class CreateNational extends React.Component {
 			data: JSON.stringify(data),
 			headers: headers
 		}).done(function (data) {
-
+			that.props.onHide();
 		}).fail( function (jqXHR, textStatus, errorThrown) {
 			alert('handleSubmit for CreateNational Failed!');
 		});			

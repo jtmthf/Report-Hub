@@ -747,12 +747,13 @@ module.exports = function(app, pool) {
 				errors: errors
 			});
 		} else {
-			var pageNumber = req.body.pageNumber;
-			var pageSize = req.body.pageSize;
+			var pageNumber = req.query.pageNumber;
+			var pageSize = req.query.pageSize;
 			var email = req.body.email;
-			var searchString = req.body.searchString;
+			var searchString = req.query.searchString;
 			var chapID = req.body.chapID;
 
+			console.log(req.query);
 			//If we want to get the national organization that a chapter is a part of
 			if(chapID) {
 				//Call the neccessary query function to get the national org from the database
@@ -780,7 +781,7 @@ module.exports = function(app, pool) {
 			//If we want to get all the national organizations from the database
 			} else {
 				//Call the neccessary query function to get the national org from the database
-				query.getAllNationals(pageNumber, pageSize, searchString, function(err, result) {
+				query.getAllNationals(parseInt(pageNumber), parseInt(pageSize), searchString, function(err, result) {
 					if (err) {
 						throw err;
 					}

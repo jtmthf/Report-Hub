@@ -30,7 +30,7 @@ var api = express.Router();
 
 // get all data/stuff of the body (POST) parameters
 // parse application/json 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(expressValidator({
 	customValidators: {

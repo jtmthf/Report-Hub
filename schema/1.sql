@@ -98,7 +98,7 @@ CREATE TABLE Report(
 	Chapter 	INT								NOT NULL,
 	Author      VARCHAR(64),
 	FOREIGN KEY(Meeting)						REFERENCES Meeting(ID) ON DELETE CASCADE,
-	FOREIGN KEY(Office, Chapter)				REFERENCES Office(Title, Chapter) ON DELETE SET NULL,
+	FOREIGN KEY(Office, Chapter)				REFERENCES Office(Title, Chapter),
 	PRIMARY KEY(ID)
 ) ENGINE=InnoDB;
 
@@ -126,7 +126,7 @@ CREATE TABLE Invite(
 	Position      VARCHAR(64),
 	Nationals    VARCHAR(64),
 	Role         VARCHAR(8)                    NOT NULL,
-	PRIMARY KEY(Email)                         ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY(Email),
 	FOREIGN KEY(Position, Chapter)             REFERENCES Office(Title, Chapter) ON DELETE SET NULL,
 	FOREIGN KEY(Chapter)                       REFERENCES Chapter(ID) ON DELETE CASCADE,
 	FOREIGN KEY(Nationals)                     REFERENCES National(Name) ON DELETE CASCADE ON UPDATE CASCADE 

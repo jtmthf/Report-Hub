@@ -185,7 +185,7 @@ module.exports = function(db) {
 		//Gets all the national organizations whose attributes match up with a searchString
 		//PageNum and PageSize are used to determine how pages are loaded as the user scrolls downwards
 		getAllNationals: function(pageNum, pageSize, searchString, callback) {
-			db.query('SELECT N.Name FROM National N WHERE N.Name LIKE ?% LIMIT ?, ?', [searchString, (pageNum-1)*pageSize, pageSize], callback);
+			db.query("SELECT N.Name FROM National N WHERE N.Name LIKE ? LIMIT ?, ?", [searchString+'%', (pageNum-1)*pageSize, pageSize], callback);
 		}, 
 
 		//Gets the national organization of a chapter using the chapter ID
