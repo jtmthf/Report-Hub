@@ -811,7 +811,7 @@ module.exports = function(app, pool) {
 			var url = req.body.url;
 			var natName = req.body.natName;
 
-			//Call the query function to insert a new national entity into the National table
+			//Call the query function to insert a new national tuple into the National table
 			query.createNational(natName, url, function(err, result) {
 				if (err) {
 					throw err;
@@ -971,7 +971,7 @@ module.exports = function(app, pool) {
 		var natName = req.body.natName;
 		var schoolName = req.body.schoolName;
 
-		//Call the query function to insert a new chapter entity into the Chapter table
+		//Call the query function to insert a new chapter tuple into the Chapter table
 		query.createChapter(chapName, natName, schoolName, function(err, result) {
 			if (err) {
 				throw err;
@@ -1214,7 +1214,7 @@ module.exports = function(app, pool) {
 
 			//If we want to give a position a new title
 			if(newTitle) {
-				//Call the query function to update the Office entity with the new title as well as possibly a new admin value or new email
+				//Call the query function to update the Office tuple with the new title as well as possibly a new admin value or new email
 				query.editPosition(title, newTitle, admin, email, chapID, function(err, result) {
 					if (err) {
 						throw err;
@@ -1225,7 +1225,7 @@ module.exports = function(app, pool) {
 					});
 				});					
 			} else {
-				//Call the query function to update the Office entity with the same title but possibly a new admin value or new email
+				//Call the query function to update the Office tuple with the same title but possibly a new admin value or new email
 				query.editPosition(title, title, admin, email, chapID, function(err, result) {
 					if (err) {
 						throw err;
@@ -1260,7 +1260,7 @@ module.exports = function(app, pool) {
 			var chapID = req.body.chapID;
 
 			//Call the query function to remove a position from the database using posTitle and chapID
-			query.removeReport(posTitle, chapID, function(err, result) {
+			query.removePosition(posTitle, chapID, function(err, result) {
 				if (err) {
 					throw err;
 				}
@@ -1380,7 +1380,7 @@ module.exports = function(app, pool) {
 			}
 		});
 
-		//Call query function to insert a new report entity into the database
+		//Call query function to insert a new report tuple into the database
 		query.createReport(clean, plain, Date(), req.body.meeting, req.body.office, req.body.chapter, function(err) {
 			if (err) {
 				throw err;
@@ -1415,7 +1415,7 @@ module.exports = function(app, pool) {
 				errors: errors
 			});
 		}else {
-			//Calls query function to update a report entity in the database
+			//Calls query function to update a report tuple in the database
 			query.editReport(clean, plain, Date(), req.body.meeting, req.body.office, req.body.reportID, function(err) {
 				if (err) {
 					throw err;
@@ -1614,7 +1614,7 @@ module.exports = function(app, pool) {
 			var title = req.body.title;
 			var mtgID = req.body.mtgID;
 
-			//Call the query function to update a meeting entity
+			//Call the query function to update a meeting tuple
 			query.editMeeting(mtgID, day, title, function(err, result) {
 				if (err) {
 					throw err;

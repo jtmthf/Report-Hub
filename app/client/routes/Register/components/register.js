@@ -40,7 +40,7 @@ class Register extends React.Component {
 	}
 
 	handleSubmit() {
-		let data = {
+		const data = {
 			name: {
 				first: this.state.first,
 				last: this.state.last
@@ -49,8 +49,9 @@ class Register extends React.Component {
 			password: this.state.password,
 			confirmation: this.state.confirmation
 		}
-		let that = this;
+		const that = this;
 
+		//don't need contentType for get requests
 		$.ajax({
 			type: 'POST',
 			url: 'https://localhost:8443/api/register',
@@ -61,7 +62,7 @@ class Register extends React.Component {
 			sessionStorage.setItem('token', data.token);
 			that.props.history.pushState(null, '/app');
 		}).fail( function (jqXHR, textStatus, errorThrown) {
-
+			alert('Register Failed!');
 		});
 	}
 

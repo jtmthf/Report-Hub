@@ -96,6 +96,7 @@ CREATE TABLE Report(
 	Meeting 	INT 							NOT NULL,
 	Office 		VARCHAR(64)						NOT NULL,
 	Chapter 	INT								NOT NULL,
+	Author      VARCHAR(64),
 	FOREIGN KEY(Meeting)						REFERENCES Meeting(ID) ON DELETE CASCADE,
 	FOREIGN KEY(Office, Chapter)				REFERENCES Office(Title, Chapter) ON DELETE SET NULL,
 	PRIMARY KEY(ID)
@@ -112,7 +113,7 @@ CREATE TABLE Permissions(
 ) ENGINE=InnoDB;
 
 CREATE TABLE Token(
-	Token 		CHAR(32),
+	Token 		CHAR(32)                        NOT NULL,
 	User		VARCHAR(100),
 	Expiration	TIMESTAMP,
 	FOREIGN KEY(User)			                REFERENCES User(Email) ON DELETE CASCADE,
