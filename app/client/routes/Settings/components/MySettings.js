@@ -13,4 +13,4 @@ class MySettings extends React.Component {
 	}
 }
 
-module.exports = MySettings;
+export default MySettings

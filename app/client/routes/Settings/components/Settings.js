@@ -12,8 +12,8 @@ class Settings extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {key: 'admin'};
 		this.handleSelect = this.handleSelect.bind(this);
-		this.state = {key: 'mine'};
 	}
 
 	handleSelect(key) {
@@ -27,8 +27,8 @@ class Settings extends React.Component {
 					<Panel>
 						<Grid fluid={true}>
 							<Tabs activeKey={this.state.key} onSelect={this.handleSelect}>
-								<Tab eventKey="mine" title="My Settings"><AdminSettings /></Tab>
-								<Tab eventKey="admin" title="Admin Settings"><MySettings /></Tab>
+								<Tab eventKey="admin" title="Admin Settings"><AdminSettings /></Tab>
+								<Tab eventKey="mine" title="My Settings"><MySettings /></Tab>
 							</Tabs>
 						</Grid>
 					</Panel>
@@ -38,4 +38,4 @@ class Settings extends React.Component {
 	}
 }
 
-module.exports = Settings
+module.exports = Settings;
