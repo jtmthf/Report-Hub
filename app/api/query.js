@@ -230,15 +230,15 @@ module.exports = function(db) {
 			db.query('SELECT M.Day FROM Meeting M WHERE M.Day = ?', [mtgDay], callback);
 		},
 
-		//Gets all the meetings that have been held by a chapter
-		getMeetingByChapter: function(chapID, callback) {
-			db.query('SELECT M.Day FROM Meeting M WHERE M.Chapter = ?', [chapID], callback);
+		//Gets the number meetings that have been held by a chapter
+		getMeetingByChapterCount: function(chapID, callback) {
+			db.query('SELECT COUNT(*) FROM Meeting M WHERE M.Chapter = ?', [chapID], callback);
 		},
 
 		//Gets all the meetings that have been held by a chapter
-		getMeetingByChapterCount: function(chapID, callback) {
-			db.query('SELECT COUNT(*) FROM Meeting M WHERE M.Chapter = ?', [chapID], callback);
-		},			
+		getMeetingByChapter: function(pageNum, pageSize, chapID, callback) {
+			db.query('SELECT M.Day FROM Meeting M WHERE M.Chapter = ? LIMIT ?, ?', [chapID, (pageNum-1)*pageSize, pageSize], callback);
+		},	
 
 		//Gets a meeting using its ID
 		getMeetingByID: function(mtgID, callback)	{
