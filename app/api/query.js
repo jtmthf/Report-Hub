@@ -55,7 +55,10 @@ module.exports = function(db) {
 		//Gets all the users within a chapter - can narrow down the users with a searchString
 		//PageNum and PageSize are used to determine how pages are loaded as the user scrolls downwards
 		getUserByChapter: function(pageNum, pageSize, searchString, chapID, callback) {
-			db.query('SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Student S WHERE U.Email = S.Email AND S.Chapter = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?', [chapID, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
+			db.query("(SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Student S WHERE U.Email = S.Email AND S.Chapter = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?)" +
+						"UNION " +
+						"(SELECT U.First, U.Last, U.Email, U.Avatar FROM User U, Advisor A WHERE U.Email = A.Email AND A.Chapter = ? AND (U.First LIKE ?% OR U.Last LIKE ?% OR U.Email LIKE ?%) LIMIT ?, ?)", 
+						[chapID, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize, chapID, searchString, searchString, searchString, (pageNum-1)*pageSize, pageSize], callback);
 		},
 
 		//Gets all the users that are "students" - can narrow down the users with a searchString
@@ -195,7 +198,7 @@ module.exports = function(db) {
 
 		//Gets the national organization of a user
 		getNationalByUser: function(email, callback) {
-			db.query("(SELECT C.Nationals FROM Chapter C, Advisor A,  WHERE C.ID = A.Chapter AND A.Email = ?)" +
+			db.query("(SELECT C.Nationals FROM Chapter C, Advisor A WHERE C.ID = A.Chapter AND A.Email = ?)" +
 					"UNION" +
 					"(SELECT C.Nationals FROM Chapter C, Student S WHERE C.ID = S.Chapter AND S.Email = ?)" +
 					"UNION" +
