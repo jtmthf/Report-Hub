@@ -14,7 +14,8 @@ const rootRoute = {
 		childRoutes: [
 			require('./routes/Register'),
 			require('./routes/Login'),
-			require('./routes/App')
+			require('./routes/App'),
+			require('./routes/Settings')
 		]
 	}]
 };
