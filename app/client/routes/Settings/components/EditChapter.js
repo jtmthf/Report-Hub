@@ -31,10 +31,9 @@ class EditChapter extends React.Component {
 			data: data,
 			headers: headers
 		}).done(function (data) {
-			sessionStorage.setItem('token', data.token);
-			that.props.history.pushState(null, '/app');
+
 		}).fail( function (jqXHR, textStatus, errorThrown) {
-			alert('Register Failed!');
+			alert('getChapter Failed!');
 		});			
 	}
 
@@ -62,10 +61,9 @@ class EditChapter extends React.Component {
 			data: data,
 			headers: headers
 		}).done(function (data) {
-			sessionStorage.setItem('token', data.token);
-			that.props.history.pushState(null, '/app');
+
 		}).fail( function (jqXHR, textStatus, errorThrown) {
-			alert('Register Failed!');
+			alert('getNationals Failed!');
 		});			
 	}
 
@@ -94,10 +92,9 @@ class EditChapter extends React.Component {
 			data: JSON.stringify(data),
 			headers: headers
 		}).done(function (data) {
-			sessionStorage.setItem('token', data.token);
-			that.props.history.pushState(null, '/app');
+
 		}).fail( function (jqXHR, textStatus, errorThrown) {
-			alert('Register Failed!');
+			alert('handleSubmit for EditChapter Failed!');
 		});			
 	}
 
@@ -121,10 +118,9 @@ class EditChapter extends React.Component {
 			data: data,
 			headers: headers
 		}).done(function (data) {
-			sessionStorage.setItem('token', data.token);
-			that.props.history.pushState(null, '/app');
+
 		}).fail( function (jqXHR, textStatus, errorThrown) {
-			alert('Register Failed!');
+			alert('handleDelete for chapter Failed!');
 		});	
 	}
 

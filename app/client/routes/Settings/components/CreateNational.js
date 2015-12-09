@@ -28,10 +28,9 @@ class CreateNational extends React.Component {
 			data: JSON.stringify(data),
 			headers: headers
 		}).done(function (data) {
-			sessionStorage.setItem('token', data.token);
-			that.props.history.pushState(null, '/app');
+
 		}).fail( function (jqXHR, textStatus, errorThrown) {
-			alert('Register Failed!');
+			alert('handleSubmit for CreateNational Failed!');
 		});			
 	}
 
