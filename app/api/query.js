@@ -206,6 +206,11 @@ module.exports = function(db) {
 					[email, email, email], callback);
 		},
 
+		//Gets the number meetings that have been held by a chapter
+		getNumNationals: function(natName, callback) {
+			db.query('SELECT COUNT(*) FROM National N WHERE N.Name = ?', [natName], callback);
+		},	
+
 		//Gets the positions within a chapter
 		//PageNum and PageSize are used to determine how pages are loaded as the user scrolls downwards
 		getPositionsByChapter: function(pageNum, pageSize, chapID, callback) {
