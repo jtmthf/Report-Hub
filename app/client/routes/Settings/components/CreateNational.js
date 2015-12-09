@@ -7,12 +7,24 @@ class CreateNational extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {natName: '', url: ''}
+		this.handleNameChange = this.handleNameChange.bind(this);
+		this.handleURLChange = this.handleURLChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleNameChange(event) {
+		this.setState({natName: event.target.value});
+	}
+
+	handleURLChange(event) {
+		this.setState({url: event.target.value});
 	}
 
 	// POST api/national
 	handleSubmit() {
-		var token = sessionStorage.getItem(tokenKey);
-		var headers = {};
+		const token = sessionStorage.getItem('token');
+		let headers = {};
 		if (token) {
 		    headers.Authorization = 'Bearer ' + token;
 		}
@@ -31,8 +43,7 @@ class CreateNational extends React.Component {
 			data: JSON.stringify(data),
 			headers: headers
 		}).done(function (data) {
-			sessionStorage.setItem('token', data.token);
-			that.props.history.pushState(null, '/app');
+
 		}).fail( function (jqXHR, textStatus, errorThrown) {
 			alert('Register Failed!');
 		});			
@@ -45,7 +56,18 @@ class CreateNational extends React.Component {
 					<Modal.Title>Create National Organization</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<h4>Here we go!</h4>
+					<form>
+						<Input 
+							type="text"
+							value={this.state.natName}
+							label="Name:"
+							onChange={this.handleNameChange} />
+						<Input
+							type="text"
+							value={this.state.url}
+							label="URL:"
+							onChange={this.handleURLChange} />
+					</form>
 				</Modal.Body>
 				<Modal.Footer>
 					<Button onClick={this.handleSubmit}>Create</Button>

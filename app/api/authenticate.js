@@ -11,7 +11,7 @@ module.exports = function(app, pool) {
 	var client = redis.createClient(); //creates a new client
 
 	function authenticate(req, res, next) {
-		var token = req.headers.Authorization.replace('Bearer ', '');
+		var token = req.headers['authorization'].replace('Bearer ', '');
 		if (token) {
 			jwt.verify(token, app.get('jwtSecret'), function(err, decoded) {
 				if (err) {
